@@ -48,6 +48,8 @@
     gaps: { d: string; tone: string }[][];
     followD: string;
     big: { ca: (0 | 1 | null)[]; cb: (0 | 1 | null)[] };
+    bigIdx: number;
+    bigTarget: { x: number; y: number };
   }
 
   const cellFill = (v: 0 | 1 | null) => (v === null ? INK : v === 1 ? COOP : DEFECT);
@@ -111,7 +113,10 @@
       ) ??
       prs.find((pr) => [...pr.ca, ...pr.cb].every((v) => v === 1)) ??
       prs[0];
-    return { cols, gaps, followD: d, big: { ca: big.ca, cb: big.cb } };
+    const bigIdx = prs.indexOf(big);
+    const w1yOff = TG.y0 + ((28 - prs.length) * TG.pitchY) / 2;
+    const bigTarget = { x: colX(0), y: w1yOff + bigIdx * TG.pitchY };
+    return { cols, gaps, followD: d, big: { ca: big.ca, cb: big.cb }, bigIdx, bigTarget };
   })();
 
   // big intro strip geometry
@@ -123,13 +128,15 @@
     const dealEnv = windowEnv(p, 0.4, 0.52);
     const stageA = 1 - beat(p, 0.54, 0.58);
     const stageB = beat(p, 0.56, 0.6);
-    const singleEnv = windowEnv(p, 0.58, 0.68);
     const singleT = beat(p, 0.58, 0.64);
-    const col1T = beat(p, 0.68, 0.74);
-    const followT = beat(p, 0.91, 0.96);
-    const colT = (i: number) => (i === 0 ? col1T : beat(p, 0.76 + (i - 1) * 0.0064, 0.76 + (i - 1) * 0.0064 + 0.015));
-    const gapT = (g: number) => beat(p, 0.758 + g * 0.0064, 0.758 + g * 0.0064 + 0.012);
-    return { people, cal, dealEnv, stageA, stageB, singleEnv, singleT, col1T, followT, colT, gapT };
+    const fly = beat(p, 0.665, 0.715);          // featured strip flies to its wave-1 slot
+    const singleFade = 1 - beat(p, 0.66, 0.69); // labels/annotations fade as flight starts
+    const strip = 1 - beat(p, 0.72, 0.732);     // flown strip hands off to the column's copy
+    const col1T = beat(p, 0.72, 0.78);
+    const followT = beat(p, 0.92, 0.965);
+    const colT = (i: number) => (i === 0 ? col1T : beat(p, 0.79 + (i - 1) * 0.006, 0.79 + (i - 1) * 0.006 + 0.014));
+    const gapT = (g: number) => beat(p, 0.788 + g * 0.006, 0.788 + g * 0.006 + 0.012);
+    return { people, cal, dealEnv, stageA, stageB, singleT, fly, singleFade, strip, col1T, followT, colT, gapT };
   }
 </script>
 
@@ -138,7 +145,7 @@
     {@const f = frame(reduced ? 1 : progress)}
     {@const stageA = reduced ? 0 : f.stageA}
     {@const stageB = reduced ? 1 : f.stageB}
-    <div class="mx-auto flex h-full w-full max-w-7xl flex-col px-6 pt-10">
+    <div class="mx-auto flex h-full w-full max-w-7xl flex-col px-6 pb-6 pt-10">
       <p class="font-sans text-xs uppercase tracking-widest text-muted">{experiment.kicker}</p>
       <h2 class="font-serif text-3xl sm:text-4xl text-ink">{experiment.title}</h2>
 
@@ -184,15 +191,24 @@
           <!-- ============ stage B: the session tangle ============ -->
           {#if stageB > 0.01}
             <g opacity={stageB}>
-              <!-- big single-game strip -->
-              {#if !reduced && f.singleEnv > 0.01}
-                <g opacity={f.singleEnv}>
+              <!-- big single-game strip: draws large, then FLIES to its real wave-1 slot -->
+              {#if !reduced && f.singleT > 0 && f.strip > 0.01}
+                {@const kx = 1 + ((TG.sw / 10) / BIG.cw - 1) * f.fly}
+                {@const ky = 1 + (TG.rowH / BIG.ch - 1) * f.fly}
+                {@const fx = BIG.x + (L.bigTarget.x - BIG.x) * f.fly}
+                {@const fy = BIG.y + (L.bigTarget.y - BIG.y) * f.fly}
+                <g opacity={f.strip} transform="translate({fx} {fy}) scale({kx} {ky})">
+                  {#each Array.from({ length: 10 }) as _, r}
+                    {@const t = beat(f.singleT, r * 0.07, r * 0.07 + 0.3)}
+                    <rect x={r * BIG.cw} y="0" width={BIG.cw - 3} height={BIG.ch} rx="3" fill={cellFill(L.big.ca[r])} opacity={t * 0.92} />
+                    <rect x={r * BIG.cw} y={BIG.ch + BIG.gap} width={BIG.cw - 3} height={BIG.ch} rx="3" fill={cellFill(L.big.cb[r])} opacity={t * 0.92} />
+                  {/each}
+                </g>
+                <g opacity={f.singleFade * Math.min(1, f.singleT * 3)}>
                   <text x={W / 2} y={BIG.y - 42} text-anchor="middle" class="font-sans" font-size="13" fill={MUTED} letter-spacing="2">{experiment.tangle.single.toUpperCase()}</text>
                   {#each Array.from({ length: 10 }) as _, r}
                     {@const t = beat(f.singleT, r * 0.07, r * 0.07 + 0.3)}
                     <text x={BIG.x + r * BIG.cw + BIG.cw / 2} y={BIG.y - 12} text-anchor="middle" class="font-mono" font-size="11" fill={MUTED} opacity={t}>{r + 1}</text>
-                    <rect x={BIG.x + r * BIG.cw} y={BIG.y} width={BIG.cw - 3} height={BIG.ch} rx="3" fill={cellFill(L.big.ca[r])} opacity={t * 0.92} />
-                    <rect x={BIG.x + r * BIG.cw} y={BIG.y + BIG.ch + BIG.gap} width={BIG.cw - 3} height={BIG.ch} rx="3" fill={cellFill(L.big.cb[r])} opacity={t * 0.92} />
                   {/each}
                   <text x={BIG.x - 14} y={BIG.y + BIG.ch / 2 + 4} text-anchor="end" class="font-sans" font-size="11" fill={MUTED}>player A</text>
                   <text x={BIG.x - 14} y={BIG.y + BIG.ch * 1.5 + BIG.gap + 4} text-anchor="end" class="font-sans" font-size="11" fill={MUTED}>player B</text>
@@ -203,9 +219,13 @@
               {#each L.cols as col, ci}
                 {@const t = reduced ? 1 : f.colT(ci)}
                 {#if t > 0.01}
-                  <g opacity={t}>
-                    {#each col.cells as cell}
-                      <rect x={cell.x} y={cell.y} width={TG.sw / 10 - 0.7} height={TG.rowH} fill={cell.f} />
+                  <g opacity={ci === 0 ? 1 : t}>
+                    {#each col.cells as cell, k}
+                      {@const pi = Math.floor(k / 20)}
+                      {@const o = ci !== 0 ? 1 : pi === L.bigIdx ? 1 - f.strip : beat(t, (pi / 28) * 0.7, (pi / 28) * 0.7 + 0.3)}
+                      {#if o > 0.01}
+                        <rect x={cell.x} y={cell.y} width={TG.sw / 10 - 0.7} height={TG.rowH} fill={cell.f} opacity={o} />
+                      {/if}
                     {/each}
                   </g>
                 {/if}
@@ -277,7 +297,7 @@
         {#each experiment.captions as c}
           {@const env = reduced ? 1 : windowEnv(progress, c.at, c.until)}
           {#if reduced || env > 0.01}
-            <div class="{reduced ? 'relative mb-3' : 'absolute inset-x-0 top-0'} mx-auto max-w-2xl rounded border border-hairline bg-card/95 px-6 py-4 text-center"
+            <div class="{reduced ? 'relative mb-3' : 'absolute inset-x-0 -top-14'} mx-auto max-w-2xl rounded border border-hairline bg-card/95 px-6 py-4 text-center"
                  style={reduced ? '' : `opacity: ${env}; transform: translateY(${(1 - env) * 10}px)`}>
               <span class="absolute right-2 top-1 font-mono text-[10px] text-muted opacity-60">{c.id}</span>
               <p class="font-serif text-[15px] leading-relaxed text-ink">{c.text}</p>
