@@ -96,15 +96,15 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 620}>
+<ScrollScene heightVh={reduced ? 100 : 680}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const baseY = area.y + area.h}
     {@const colW = area.w / 5}
     {@const boxTopH = 10.5 * spacing + 78}
-    {@const thrEnv = reduced ? 0 : windowEnv(progress, 0.6, 0.7)}
+    {@const thrEnv = reduced ? 0 : windowEnv(progress, 0.6, 0.715)}
     {@const thrGrow = reduced ? 1 : beat(progress, 0.6, 0.66)}
-    {@const ccEnv = reduced ? 0 : windowEnv(progress, 0.72, 0.86)}
+    {@const ccEnv = reduced ? 0 : windowEnv(progress, 0.72, 0.875)}
     {@const ccGrow = reduced ? 1 : beat(progress, 0.72, 0.78)}
     <div class="relative mx-auto flex h-full w-full max-w-7xl flex-col px-6 pt-12">
       <p class="font-sans text-xs uppercase tracking-widest text-muted">{the36.kicker}</p>

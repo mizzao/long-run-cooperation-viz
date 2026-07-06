@@ -5,38 +5,38 @@ export const experiment = {
     {
       id: 'P3C1',
       at: 0.12,
-      until: 0.24,
-      text: 'On 4 August 2015, 113 people logged in from across the United States - 31 states, ages 18 to 61, 47% women - recruited in advance from Amazon Mechanical Turk. The 94 who stayed the course became the study population.'
+      until: 0.25,
+      text: 'On 4 August 2015, 113 people logged in from 31 US states, ages 18 to 61, 47% women, recruited on Amazon Mechanical Turk. 94 of them finished the month. They are the study population.'
     },
     {
       id: 'P3C2',
-      at: 0.26,
-      until: 0.38,
+      at: 0.27,
+      until: 0.4,
       text: 'Every weekday for a month the same people returned - twenty days in all, one session at 13:00 and one at 15:00 EDT, about 35 minutes each.'
     },
     {
       id: 'P3C3',
-      at: 0.42,
-      until: 0.54,
-      text: 'Attrition is what kills long-run experiments, so showing up was worth real money. It worked: 94 of 113 players - 83% - completed the month.'
+      at: 0.43,
+      until: 0.56,
+      text: 'Long experiments usually die from dropouts, so showing up was worth real money. It worked: 94 of 113 players (83%) completed the month.'
     },
     {
       id: 'P3C4',
       at: 0.6,
       until: 0.72,
-      text: 'This is one real game from the first afternoon: two strangers, ten rounds. Every cell is one decision - green to cooperate, red to defect. Twenty-six pairs played at once, and the session’s first game was done.'
+      text: 'One real game from the first afternoon: two strangers, ten rounds. Each cell is one decision - green for cooperate, red for defect. Twenty-six pairs played the session’s first game at the same time.'
     },
     {
       id: 'P3C5',
       at: 0.78,
-      until: 0.9,
-      text: 'Then everyone reshuffled: a new anonymous partner for every game, twenty games a session. No names, no reputations, no way to build a relationship - only choices.'
+      until: 0.905,
+      text: 'After each game the pairs reshuffled: a new anonymous partner every game, twenty games a session. Players never saw names or histories, so no one could build a reputation. Each game stood on its own.'
     },
     {
       id: 'P3C6',
-      at: 0.92,
+      at: 0.915,
       until: 1,
-      text: 'The dark line threads one player’s afternoon through the shuffle. Multiply by two sessions and twenty days: 374,251 decisions, every one recorded. Game theory says how they should evolve - here is what actually happened.'
+      text: 'The dark line follows one player through all twenty games. This is one session of one day. The full experiment ran two sessions a day for twenty days: 374,251 recorded decisions. The next sections show how they changed over the month.'
     }
   ],
   calendar: {

@@ -43,14 +43,14 @@
       axes: beat(p, ...BEATS.axes),
       lines: beat(p, ...BEATS.lines),
       gapT: beat(p, ...BEATS.gap),
-      day1Env: reduced ? 0 : windowEnv(p, 0.05, 0.2),
-      gapEnv: reduced ? 1 : windowEnv(p, 0.52, 0.7),
+      day1Env: reduced ? 0 : windowEnv(p, 0.05, 0.22),
+      gapEnv: reduced ? 1 : windowEnv(p, 0.52, 0.72),
       quoteEnv: reduced ? 1 : windowEnv(p, 0.74, 1)
     };
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 600}>
+<ScrollScene heightVh={reduced ? 100 : 660}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const clipW = margin.left + (width - margin.left - margin.right) * f.lines}

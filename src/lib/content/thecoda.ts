@@ -3,8 +3,8 @@ export const thecoda = {
   title: 'What the month added up to',
   numberSub: 'of the way from mutual defection to the best collective outcome - sustained for twenty consecutive days',
   captions: [
-    { at: 0.2, until: 0.34, text: 'Across all 374,251 decisions, the population captured 84% of the best collective outcome the game allows.' },
-    { at: 0.5, until: 0.66, text: 'The mechanism was not universal virtue. It was a minority refusing to strike first - which made cooperating the rational choice for everyone else.' }
+    { at: 0.2, until: 0.36, text: 'Across all 374,251 decisions, the population captured 84% of the best collective outcome the game allows.' },
+    { at: 0.5, until: 0.68, text: 'Cooperation held because a minority refused to defect first. Their presence made cooperating the better-paying choice for everyone else.' }
   ],
   caveats: {
     title: 'What this study cannot claim',

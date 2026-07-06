@@ -8,7 +8,7 @@
   let { sim, empirical }: { sim: SimulationData; empirical: number[][] } = $props();
 
   const COLORS = ['#8B8474', '#7A8A5A', '#A8642F', '#D64A22', '#C79008'];
-  const BEATS = { draw: [0.02, 0.14], collapse: [0.44, 0.5], phase: [0.66, 0.72], welfare: [0.9, 0.94] } as const;
+  const BEATS = { draw: [0.02, 0.14], collapse: [0.44, 0.5], phase: [0.66, 0.72], welfare: [0.88, 0.92] } as const;
 
   let width = $state(1100);
   let height = $state(620);
@@ -60,12 +60,12 @@
       welfareT: beat(p, ...BEATS.welfare),
       panelsOpacity: reduced ? 0 : 1 - beat(p, 0.62, 0.66),
       phaseOpacity: reduced ? 0 : Math.min(beat(p, 0.66, 0.72), 1 - beat(p, 0.87, 0.9)),
-      welfareOpacity: reduced ? 1 : beat(p, 0.9, 0.94)
+      welfareOpacity: reduced ? 1 : beat(p, 0.88, 0.92)
     };
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 760}>
+<ScrollScene heightVh={reduced ? 100 : 800}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const m = mobile ? { top: 72, right: 24, bottom: 56, left: 40 } : { top: 78, right: 64, bottom: 64, left: 64 }}

@@ -57,7 +57,7 @@
   <svg viewBox="0 0 {W} {H}" class="absolute inset-0 h-full w-full opacity-[0.17]" preserveAspectRatio="xMidYMid slice"
        role="img" aria-label={hero.aria}>
     {#each minis as m}
-      <g style={reduced ? '' : `animation: hero-day-in 0.9s ease ${(m.day - 1) * 0.1}s both`}>
+      <g style={reduced ? '' : `animation: hero-day-in 1.15s ease ${(m.day - 1) * 0.12}s both`}>
         {#each m.cells as cell}
           <rect x={cell.x} y={cell.y} width={MW / 20 - 1.6} height={MH / 10 - 1.6} rx="1" fill={cell.f} />
         {/each}
@@ -67,7 +67,7 @@
   <div class="pointer-events-none absolute inset-0"
        style="background: radial-gradient(ellipse 62% 52% at 50% 46%, #FBF8F1F2 0%, #FBF8F1B0 55%, #FBF8F100 100%)"></div>
 
-  <div class="relative">
+  <div class="relative" style={reduced ? '' : 'animation: hero-day-in 1.1s ease 0.25s both'}>
     <p class="font-sans text-xs uppercase tracking-[0.25em] text-muted">{hero.kicker}</p>
     <h1 class="mt-4 font-serif text-5xl sm:text-7xl text-ink">{hero.title}</h1>
     <p class="mx-auto mt-6 max-w-2xl font-serif text-xl leading-relaxed text-muted">{hero.subtitle}</p>
@@ -75,7 +75,7 @@
   </div>
 
   <p class="absolute bottom-5 right-6 max-w-xs text-right font-sans text-[11px] leading-snug text-muted opacity-80">{hero.backdropNote}</p>
-  <p class="absolute bottom-8 animate-bounce font-sans text-xs uppercase tracking-widest text-muted motion-reduce:animate-none">{hero.scroll}</p>
+  <p class="absolute bottom-8 animate-bounce font-sans text-xs uppercase tracking-widest text-muted motion-reduce:animate-none" style={reduced ? '' : 'animation: hero-day-in 1s ease 2.2s both, bounce 1s infinite 2.2s'}>{hero.scroll}</p>
 </header>
 
 <style>

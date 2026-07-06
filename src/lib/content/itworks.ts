@@ -2,11 +2,11 @@ export const itworks = {
   kicker: 'Part eight',
   title: 'Why a minority is enough',
   captions: [
-    { at: 0.16, until: 0.28, text: 'The paper explains the floor with a learning model: rational agents track what opponents play and pick the threshold that pays best - while a fixed minority simply cooperates unless provoked.' },
-    { at: 0.3, until: 0.42, text: 'With the minority set to 40%, the model reproduces the experiment: the same strategy mix, the same stability - defection at round 9 becomes the most common rational rule.' },
-    { at: 0.52, until: 0.64, text: 'Remove the minority and nothing holds: unravelling runs all the way down until everyone defects from round 1.' },
-    { at: 0.72, until: 0.87, text: 'Sweeping the minority share reveals a tipping point near 10%. Below it, collapse; above it, the floor rises fast. The experiment sits far to the right of it.' },
-    { at: 0.94, until: 1, text: 'And the floor pays. With the resilient minority present, every group earns more - including the rational majority who exploit them.' }
+    { at: 0.16, until: 0.29, text: 'The paper tests the explanation with a learning model. Rational agents track what opponents play and pick the defection round that pays best. A fixed minority cooperates unless provoked.' },
+    { at: 0.3, until: 0.44, text: 'With the minority set to 40%, the model reproduces the experiment: unravelling slows and stops, and defecting at round 9 becomes the most common rational strategy, matching the real data.' },
+    { at: 0.52, until: 0.66, text: 'Remove the minority and the same model collapses: defection moves earlier and earlier until every agent defects from round 1.' },
+    { at: 0.72, until: 0.88, text: 'Varying the minority share shows a tipping point near 10%. Below it the model collapses. Above it, unravelling stops at later and later rounds. The real experiment, at about 40%, sits well past the tipping point.' },
+    { at: 0.93, until: 1, text: 'The minority also raises earnings. With resilient cooperators present, every group in the model earns more per round - including the rational players who exploit them.' }
   ],
   chart: {
     leftTitle: 'the experiment - 94 people',

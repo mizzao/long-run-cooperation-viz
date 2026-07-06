@@ -2,11 +2,11 @@ export const itstops = {
   kicker: 'Part five',
   title: '...then it stops',
   captions: [
-    { at: 0.03, until: 0.16, text: 'A marker at day 7: after this point, the decline in late-round cooperation stops.' },
-    { at: 0.18, until: 0.34, text: 'The shaded region covers days 7-20: thirteen more sessions, about 260 more games per player, with no further decline.' },
-    { at: 0.38, until: 0.56, text: 'The thick lines are 20-game moving averages. Before day 7, round-10 cooperation fell 3.2 percentage points per day. After day 7: 0.4.' },
-    { at: 0.76, until: 0.88, text: 'The panel below uses the same 20-day axis. For each day it shows when games saw their first defection. The bars shift left during days 1-6, then stop changing: day 8 matches day 7, and day 20 matches day 8.' },
-    { at: 0.9, until: 1, text: 'A steady share of games - about one in six - ends with no defection at all (green). Some players were consistently refusing to defect first. Part six: who they are.' }
+    { at: 0.03, until: 0.17, text: 'A marker at day 7: after this point, the decline in late-round cooperation stops.' },
+    { at: 0.18, until: 0.36, text: 'The shaded region covers days 7-20: thirteen more sessions, about 260 more games per player, with no further decline.' },
+    { at: 0.38, until: 0.58, text: 'The thick lines are 20-game moving averages. Before day 7, round-10 cooperation fell by 3.2 percentage points per day. After day 7 it fell by 0.4.' },
+    { at: 0.76, until: 0.895, text: 'The panel below shows, for each day, the round where games had their first defection. During days 1-6 the bars shift left: defection comes earlier. From day 7 on, the shape stops changing - day 20 looks like day 8.' },
+    { at: 0.905, until: 1, text: 'The green bar is games with no defection at all. It holds steady at about one in six - some players simply refused to defect first, every day. The next section identifies them.' }
   ],
   chart: {
     day7: 'day 7',

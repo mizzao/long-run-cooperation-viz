@@ -64,14 +64,14 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 600}>
+<ScrollScene heightVh={reduced ? 100 : 660}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const plotRight = width - box.margin.right}
     {@const plotBottom = height - box.margin.bottom}
-    {@const day7Env = reduced ? 0 : windowEnv(progress, 0.03, 0.16)}
+    {@const day7Env = reduced ? 0 : windowEnv(progress, 0.03, 0.17)}
     {@const day7Grow = reduced ? 1 : beat(progress, 0.03, 0.09)}
-    {@const histFocus = reduced ? 0 : windowEnv(progress, 0.76, 0.88)}
+    {@const histFocus = reduced ? 0 : windowEnv(progress, 0.76, 0.895)}
     <div class="relative mx-auto flex h-full w-full max-w-7xl flex-col px-6 pt-12">
       <p class="font-sans text-xs uppercase tracking-widest text-muted">{itstops.kicker}</p>
       <h2 class="font-serif text-3xl sm:text-4xl text-ink">{itstops.title}</h2>
@@ -129,7 +129,7 @@
             {@const innerW = plotRight - box.margin.left}
             {@const cellW = innerW / 20}
             {@const barsTop = 46}
-            {@const greenFocus = reduced ? 0 : windowEnv(progress, 0.9, 1)}
+            {@const greenFocus = reduced ? 0 : windowEnv(progress, 0.905, 1)}
             <g>
               <rect x={box.margin.left} y={panelY} width={innerW} height={panelH * f.histT} fill="#FBF8F1" opacity="0.97" />
               <line x1={box.margin.left} x2={plotRight} y1={panelY} y2={panelY} stroke="#DFD8C8" stroke-width="1" />

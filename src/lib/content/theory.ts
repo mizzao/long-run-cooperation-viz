@@ -5,32 +5,32 @@ export const theory = {
     {
       id: 'P2C1',
       at: 0.15,
-      until: 0.3,
-      text: 'Game theory reasons backward from the end. In the final round there is no future left to protect, so a rational player defects - and both players can see that coming.'
+      until: 0.31,
+      text: 'Game theory reasons backward from the last round. Nothing comes after round 10, so a rational player defects in it - and both players know that in advance. The top row shows the result: round 10 turns red.'
     },
     {
       id: 'P2C2',
       at: 0.36,
-      until: 0.58,
-      text: 'That certainty poisons round 9: with round 10 already lost, defecting one round earlier is strictly better. Then round 8 falls. Each pass of the same logic drags defection back one more round.'
+      until: 0.6,
+      text: 'Each row repeats the logic one step further. If round 10 is certain defection, cooperating in round 9 gains nothing, so round 9 falls too. Then round 8. Every row of reasoning moves the first defection one round earlier.'
     },
     {
       id: 'P2C3',
-      at: 0.67,
-      until: 0.79,
-      text: 'Ten steps of reasoning later, nothing is left. The unique equilibrium of the finitely repeated game is to defect from the very first move.'
+      at: 0.66,
+      until: 0.8,
+      text: 'By the bottom row nothing is left. The theory\u2019s prediction for fully experienced players: defect from round 1. The stepped line marks how far the collapse has reached at each level of reasoning.'
     },
     {
       id: 'P2C4',
       at: 0.84,
-      until: 0.94,
-      text: 'Real people are not that ruthless - but experience pushes them the same way. In experiments of 20-30 games, first defections crept steadily earlier. The creep was visible; the endpoint was not.'
+      until: 0.95,
+      text: 'Real people are not this ruthless, but experience pushes them the same direction. In earlier experiments of 20-30 games, first defections came earlier game by game. Those experiments were too short to show where the slide would stop.'
     },
     {
       id: 'P2C5',
       at: 0.955,
       until: 1,
-      text: 'Watching cooperation unravel to the end would take more games than any lab session can hold. So the researchers built a lab without a closing time.'
+      text: 'Following that slide to its end would take hundreds of games, far more than one lab session can hold. The researchers\u2019 answer: run the experiment online and bring the same people back every weekday for a month.'
     }
   ],
   grid: {

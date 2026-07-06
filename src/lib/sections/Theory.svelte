@@ -39,7 +39,7 @@
     const appear = beat(p, 0.02, 0.08);
     const doom = beat(p, 0.1, 0.14);
     const edgeT = beat(p, 0.6, 0.66);
-    const quoteEnv = windowEnv(p, 0.82, 0.94);
+    const quoteEnv = windowEnv(p, 0.82, 0.95);
     // per-cell flip progress
     const flip = (i: number, j: number): number => {
       if (!isRed(i, j)) return 0;
@@ -51,7 +51,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 620}>
+<ScrollScene heightVh={reduced ? 100 : 680}>
   {#snippet children({ progress }: { progress: number })}
     {@const f = frame(reduced ? 1 : progress)}
     <div class="mx-auto flex h-full w-full max-w-7xl flex-col px-6 pt-10">

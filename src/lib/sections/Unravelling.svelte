@@ -97,13 +97,13 @@
   const dayLabels = [1, 5, 10, 15, 20];
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 620}>
+<ScrollScene heightVh={reduced ? 100 : 680}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const plotBottom = height - box.margin.bottom}
-    {@const day1Env = reduced ? 0 : windowEnv(progress, 0.3, 0.46)}
+    {@const day1Env = reduced ? 0 : windowEnv(progress, 0.3, 0.47)}
     {@const day1Grow = reduced ? 1 : beat(progress, 0.3, 0.36)}
-    {@const foc = reduced ? { '1': 0, '8': 0, '9': 0, '10': 0 } : { '1': windowEnv(progress, 0.85, 1), '8': 0, '9': windowEnv(progress, 0.66, 0.8), '10': windowEnv(progress, 0.48, 0.64) }}
+    {@const foc = reduced ? { '1': 0, '8': 0, '9': 0, '10': 0 } : { '1': windowEnv(progress, 0.85, 1), '8': 0, '9': windowEnv(progress, 0.66, 0.82), '10': windowEnv(progress, 0.48, 0.65) }}
     {@const maxFoc = Math.max(foc['1'], foc['9'], foc['10'])}
     {@const morningEnv = reduced ? 0 : windowEnv(progress, 0.52, 0.78)}
     {@const day2Rate = coop.rounds['10'][20].rate ?? 0.5}

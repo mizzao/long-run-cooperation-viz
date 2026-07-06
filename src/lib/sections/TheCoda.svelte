@@ -34,17 +34,17 @@
     if (reduced) p = 1;
     return {
       num: beat(p, 0.02, 0.18),
-      numEnv: reduced ? 1 : Math.min(1, beat(p, 0.02, 0.06)) * (1 - beat(p, 0.32, 0.38)),
-      crowd: beat(p, 0.36, 0.46),
-      gold: beat(p, 0.48, 0.56),
-      crowdEnv: reduced ? 0 : Math.min(beat(p, 0.36, 0.42), 1 - beat(p, 0.64, 0.7)),
-      cavEnv: reduced ? 1 : Math.min(beat(p, 0.68, 0.74), 1 - beat(p, 0.84, 0.88)),
-      credEnv: reduced ? 1 : beat(p, 0.88, 0.94)
+      numEnv: reduced ? 1 : Math.min(1, beat(p, 0.02, 0.06)) * (1 - beat(p, 0.34, 0.4)),
+      crowd: beat(p, 0.38, 0.48),
+      gold: beat(p, 0.5, 0.58),
+      crowdEnv: reduced ? 0 : Math.min(beat(p, 0.38, 0.44), 1 - beat(p, 0.66, 0.72)),
+      cavEnv: reduced ? 1 : Math.min(beat(p, 0.7, 0.76), 1 - beat(p, 0.86, 0.9)),
+      credEnv: reduced ? 1 : beat(p, 0.9, 0.955)
     };
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 480}>
+<ScrollScene heightVh={reduced ? 100 : 540}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const spacing = mobile ? 24 : 34}

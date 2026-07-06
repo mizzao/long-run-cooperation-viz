@@ -16,6 +16,7 @@
   let bot = $state<Move[]>([]);
   let totals = $state({ you: 0, bot: 0 });
   let lastOutcome = $state<string | null>(null);
+  let lastTone = $state<string>('#211E19');
   let g1 = $state<{ you: Move[]; bot: Move[] } | null>(null);
   let firstDefection = $state<(number | null)[]>([null, null]);
 
@@ -40,6 +41,7 @@
     bot = [...bot, b];
     totals = { you: totals.you + py, bot: totals.bot + pb };
     lastOutcome = m === 1 && b === 1 ? playable.outcome.cc : m === 1 ? playable.outcome.cd : b === 1 ? playable.outcome.dc : playable.outcome.dd;
+    lastTone = m === 1 && b === 1 ? COOP : m === 0 && b === 0 ? '#6E6759' : DEFECT;
     if (m === 0 && firstDefection[game] === null && !bot.slice(0, -1).includes(0)) {
       const fd = [...firstDefection];
       fd[game] = round;
@@ -140,7 +142,7 @@
             <button class="rounded border-2 px-7 py-3.5 font-sans text-sm transition-colors hover:bg-paper" style="border-color: {DEFECT}; color: {DEFECT}" onclick={() => choose(0)}>{playable.buttons.defect}</button>
           </div>
 
-          <p class="mt-5 h-5 text-center font-sans text-sm text-ink">{lastOutcome ?? ''}</p>
+          <p class="mt-5 h-5 text-center font-sans text-sm" style="color: {lastTone}">{lastOutcome ?? ''}</p>
 
           <div class="mt-4 space-y-2">
             {@render trail(you, 'you')}

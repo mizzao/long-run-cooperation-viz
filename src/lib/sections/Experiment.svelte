@@ -125,7 +125,7 @@
   function frame(p: number) {
     const people = beat(p, 0.02, 0.1);
     const cal = beat(p, 0.14, 0.22);
-    const dealEnv = windowEnv(p, 0.4, 0.52);
+    const dealEnv = windowEnv(p, 0.41, 0.54);
     const stageA = 1 - beat(p, 0.54, 0.58);
     const stageB = beat(p, 0.56, 0.6);
     const singleT = beat(p, 0.58, 0.64);
@@ -140,7 +140,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 780}>
+<ScrollScene heightVh={reduced ? 100 : 820}>
   {#snippet children({ progress }: { progress: number })}
     {@const f = frame(reduced ? 1 : progress)}
     {@const stageA = reduced ? 0 : f.stageA}

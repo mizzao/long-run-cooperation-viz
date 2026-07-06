@@ -2,11 +2,11 @@ export const thecost = {
   kicker: 'Part seven',
   title: 'The cost of holding the line',
   captions: [
-    { at: 0.05, until: 0.2, text: 'On day 1 the two groups earned nearly the same - about 4.7 points per round. Refusing to defect first cost nothing, yet.' },
-    { at: 0.28, until: 0.46, text: 'From day 2 the lines separate: resilient cooperators earned less than threshold players on every remaining day.' },
-    { at: 0.54, until: 0.7, text: 'Across the stable phase the gap averaged 0.08 points per round - a steady tax for never striking first.' },
-    { at: 0.76, until: 0.9, text: 'The pressure was real. Not everyone who started out cooperatively could sustain it against repeated exploitation.' },
-    { at: 0.92, until: 1, text: 'Thirty-six did, for a month, at a measurable cost. Part eight: why that minority stabilizes everyone.' }
+    { at: 0.05, until: 0.22, text: 'On day 1 the two groups earned nearly the same, about 4.7 points per round. Refusing to defect first cost nothing on the first day.' },
+    { at: 0.28, until: 0.48, text: 'From day 2 the lines separate: resilient cooperators earned less than threshold players on every remaining day.' },
+    { at: 0.54, until: 0.72, text: 'Across the stable phase the gap averaged 0.08 points per round. Never defecting first had a small but persistent cost, paid every day.' },
+    { at: 0.76, until: 0.905, text: 'Not everyone could keep it up. Some players who began as cooperators switched to defecting first after repeated exploitation - the card above paraphrases one player\u2019s exit-survey account.' },
+    { at: 0.915, until: 1, text: 'Thirty-six players held the line for the whole month and paid for it. The next section shows why that minority keeps cooperation stable for everyone else.' }
   ],
   chart: {
     yTitle: 'average points earned per round',
