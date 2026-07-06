@@ -2,6 +2,7 @@
   import Unravelling from '$lib/sections/Unravelling.svelte';
   import Playable from '$lib/sections/Playable.svelte';
   import Theory from '$lib/sections/Theory.svelte';
+  import Experiment from '$lib/sections/Experiment.svelte';
   import { parseCooperation, parseHeartbeat } from '$lib/data/cooperation';
   import { parseDefection } from '$lib/data/defection';
   import ItStops from '$lib/sections/ItStops.svelte';
@@ -12,6 +13,7 @@
   import ItWorks from '$lib/sections/ItWorks.svelte';
   import TheCoda from '$lib/sections/TheCoda.svelte';
   import { parseWelfare } from '$lib/data/welfare';
+  import { parseTangle } from '$lib/data/tangle';
   import { parseSimulation, parseEmpiricalShares } from '$lib/data/simulation';
   import type { PageProps } from './$types';
   let { data }: PageProps = $props();
@@ -23,11 +25,12 @@
   const sim = $derived(parseSimulation(data.simRaw));
   const empiricalShares = $derived(parseEmpiricalShares(data.distRaw));
   const welfareData = $derived(parseWelfare(data.welfareRaw));
+  const tangle = $derived(parseTangle(data.tangleRaw));
 </script>
 
 <svelte:head>
   <title>The Resilient 40% - a visual essay on cooperation</title>
-  <meta name="description" content="94 people played the Prisoner's Dilemma for 20 consecutive days - 374,263 real decisions. A scroll-driven visual essay on the minority who kept cooperation alive." />
+  <meta name="description" content="94 people played the Prisoner's Dilemma for 20 consecutive days - 374,251 real decisions. A scroll-driven visual essay on the minority who kept cooperation alive." />
 </svelte:head>
 
 <main class="bg-paper text-ink">
@@ -35,7 +38,7 @@
     <p class="font-sans text-xs uppercase tracking-[0.25em] text-muted">A visual essay</p>
     <h1 class="mt-4 font-serif text-5xl sm:text-7xl text-ink">The Resilient 40%</h1>
     <p class="mt-6 max-w-2xl font-serif text-xl leading-relaxed text-muted">
-      374,263 decisions. 94 people. 20 consecutive weekdays of the Prisoner&#8217;s Dilemma.
+      374,251 decisions. 94 people. 20 consecutive weekdays of the Prisoner&#8217;s Dilemma.
       One question: does cooperation survive experience?
     </p>
     <p class="mt-8 font-sans text-xs text-muted">
@@ -47,6 +50,8 @@
   <Playable />
 
   <Theory />
+
+  <Experiment {tangle} />
 
   <Unravelling {coop} {heartbeat} />
 

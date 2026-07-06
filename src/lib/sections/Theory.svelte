@@ -104,7 +104,7 @@
       </div>
 
       <!-- caption band -->
-      <div class="relative h-36 shrink-0">
+      <div class="{reduced ? 'relative' : 'relative h-36 shrink-0'}">
         {#if reduced}
           <div class="relative mx-auto mb-3 max-w-2xl rounded border border-hairline bg-card p-6 text-center">
             <p class="font-sans text-sm text-muted">{theory.quote.lead}</p>
