@@ -1,0 +1,52 @@
+<script lang="ts">
+  import Unravelling from '$lib/sections/Unravelling.svelte';
+  import { parseCooperation, parseHeartbeat } from '$lib/data/cooperation';
+  import { parseDefection } from '$lib/data/defection';
+  import ItStops from '$lib/sections/ItStops.svelte';
+  import The36 from '$lib/sections/The36.svelte';
+  import { parseStrategies } from '$lib/data/strategies';
+  import { parsePayoffs } from '$lib/data/payoffs';
+  import TheCost from '$lib/sections/TheCost.svelte';
+  import type { PageProps } from './$types';
+  let { data }: PageProps = $props();
+  const coop = $derived(parseCooperation(data.coopRaw));
+  const heartbeat = $derived(parseHeartbeat(data.hbRaw));
+  const defection = $derived(parseDefection(data.defRaw));
+  const players = $derived(parseStrategies(data.stratRaw));
+  const payoffs = $derived(parsePayoffs(data.payoffsRaw));
+</script>
+
+<svelte:head>
+  <title>The Resilient 40% - a visual essay on cooperation</title>
+  <meta name="description" content="94 people played the Prisoner's Dilemma for 20 consecutive days - 374,263 real decisions. A scroll-driven visual essay on the minority who kept cooperation alive." />
+</svelte:head>
+
+<main class="bg-paper text-ink">
+  <header class="relative flex min-h-[85vh] flex-col items-center justify-center px-6 text-center">
+    <p class="font-sans text-xs uppercase tracking-[0.25em] text-muted">A visual essay</p>
+    <h1 class="mt-4 font-serif text-5xl sm:text-7xl text-ink">The Resilient 40%</h1>
+    <p class="mt-6 max-w-2xl font-serif text-xl leading-relaxed text-muted">
+      374,263 decisions. 94 people. 20 consecutive weekdays of the Prisoner&#8217;s Dilemma.
+      One question: does cooperation survive experience?
+    </p>
+    <p class="mt-8 font-sans text-xs text-muted">
+      Based on Mao, Dworkin, Suri &amp; Watts &#183; <span class="italic">Nature Communications</span> 8:13800 (2017)
+    </p>
+    <p class="absolute bottom-8 animate-bounce font-sans text-xs uppercase tracking-widest text-muted motion-reduce:animate-none">Scroll</p>
+  </header>
+
+  <Unravelling {coop} {heartbeat} />
+
+  <ItStops {coop} {defection} />
+
+  <The36 {players} />
+
+  <TheCost {payoffs} />
+
+  <footer class="border-t border-hairline">
+    <div class="mx-auto flex h-[40vh] max-w-xl flex-col items-center justify-center gap-3 px-6 text-center">
+      <p class="font-serif text-lg text-ink">&#8230;the floor held because thirty-six people paid for it, daily. Next: why that was enough.</p>
+      <p class="font-sans text-sm text-muted">Stage 5 &#8212; &#8220;Why it works&#8221; &#8212; is next. This is a work-in-progress preview.</p>
+    </div>
+  </footer>
+</main>
