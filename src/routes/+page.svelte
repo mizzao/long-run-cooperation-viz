@@ -1,5 +1,6 @@
 <script lang="ts">
   import Unravelling from '$lib/sections/Unravelling.svelte';
+  import Playable from '$lib/sections/Playable.svelte';
   import { parseCooperation, parseHeartbeat } from '$lib/data/cooperation';
   import { parseDefection } from '$lib/data/defection';
   import ItStops from '$lib/sections/ItStops.svelte';
@@ -8,6 +9,8 @@
   import { parsePayoffs } from '$lib/data/payoffs';
   import TheCost from '$lib/sections/TheCost.svelte';
   import ItWorks from '$lib/sections/ItWorks.svelte';
+  import TheCoda from '$lib/sections/TheCoda.svelte';
+  import { parseWelfare } from '$lib/data/welfare';
   import { parseSimulation, parseEmpiricalShares } from '$lib/data/simulation';
   import type { PageProps } from './$types';
   let { data }: PageProps = $props();
@@ -18,6 +21,7 @@
   const payoffs = $derived(parsePayoffs(data.payoffsRaw));
   const sim = $derived(parseSimulation(data.simRaw));
   const empiricalShares = $derived(parseEmpiricalShares(data.distRaw));
+  const welfareData = $derived(parseWelfare(data.welfareRaw));
 </script>
 
 <svelte:head>
@@ -39,6 +43,8 @@
     <p class="absolute bottom-8 animate-bounce font-sans text-xs uppercase tracking-widest text-muted motion-reduce:animate-none">Scroll</p>
   </header>
 
+  <Playable />
+
   <Unravelling {coop} {heartbeat} />
 
   <ItStops {coop} {defection} />
@@ -49,10 +55,7 @@
 
   <ItWorks {sim} empirical={empiricalShares} />
 
-  <footer class="border-t border-hairline">
-    <div class="mx-auto flex h-[40vh] max-w-xl flex-col items-center justify-center gap-3 px-6 text-center">
-      <p class="font-serif text-lg text-ink">&#8230;a stubborn tenth is all it takes. Next: what the whole month adds up to.</p>
-      <p class="font-sans text-sm text-muted">Part 9 &#8212; the coda &#8212; is next. This is a work-in-progress preview.</p>
-    </div>
-  </footer>
+  <TheCoda welfare={welfareData} {players} />
+
+  <footer class="h-[12vh]"></footer>
 </main>
