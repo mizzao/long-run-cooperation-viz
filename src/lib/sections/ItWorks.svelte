@@ -55,6 +55,7 @@
     if (reduced) p = 1;
     return {
       draw: beat(p, ...BEATS.draw),
+      labelIn: beat(p, 0.13, 0.18),
       collapse: beat(p, ...BEATS.collapse),
       phaseT: beat(p, ...BEATS.phase),
       welfareT: beat(p, ...BEATS.welfare),
@@ -110,7 +111,7 @@
             <rect x={m.left} y={m.top} width={panelW} height={panelH} fill="none" stroke="#DFD8C8" />
             <text x={m.left} y={m.top + panelH + 18} class="font-mono" font-size="11" fill="#6E6759">day 1</text>
             <text x={m.left + panelW} y={m.top + panelH + 18} text-anchor="end" class="font-mono" font-size="11" fill="#6E6759">day 20</text>
-            <text x={m.left + panelW * 0.6} y={m.top + panelH * 0.22} class="font-sans" font-size="12" fill="#211E19" opacity="0.85">cooperate always &#8776; 40%</text>
+            <text x={m.left + panelW * 0.6} y={m.top + panelH * 0.22} class="font-sans" font-size="12" fill="#211E19" opacity={0.85 * f.labelIn}>cooperate always &#8776; 40%</text>
 
             {#if !mobile || true}
               {@const ry = mobile ? m.top + panelH + 60 : m.top}
@@ -130,7 +131,7 @@
               <rect x={rightX} y={ry} width={panelW} height={panelH} fill="none" stroke="#DFD8C8" />
               <text x={rightX} y={ry + panelH + 18} class="font-mono" font-size="11" fill="#6E6759">game 1</text>
               <text x={rightX + panelW} y={ry + panelH + 18} text-anchor="end" class="font-mono" font-size="11" fill="#6E6759">game 400</text>
-              <text x={rightX + panelW * 0.55} y={ry + panelH * 0.22} class="font-sans" font-size="12" fill="#211E19" opacity={0.85 * (1 - f.collapse)}>fixed 40% resilient</text>
+              <text x={rightX + panelW * 0.55} y={ry + panelH * 0.22} class="font-sans" font-size="12" fill="#211E19" opacity={0.85 * f.labelIn * (1 - f.collapse)}>fixed 40% resilient</text>
               <text x={rightX + panelW * 0.55} y={ry + panelH * 0.6} class="font-sans" font-size="12" fill="#FBF8F1" opacity={0.9 * f.collapse}>everyone defects from round 1</text>
             {/if}
           </g>
@@ -212,7 +213,7 @@
             {/each}
           </div>
         {/if}
-        <div class="pointer-events-none absolute inset-x-6 top-16 z-10 mx-auto grid w-full max-w-xl">
+        <div class="pointer-events-none absolute inset-x-6 top-4 z-10 mx-auto grid w-full max-w-xl">
           {#each itworks.captions.filter((c) => c.at >= 0.9) as cap}
             <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
                style="opacity: {windowEnv(progress, cap.at, cap.until)}">
