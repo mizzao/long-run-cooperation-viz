@@ -1,6 +1,7 @@
 <script lang="ts">
   import Unravelling from '$lib/sections/Unravelling.svelte';
   import Playable from '$lib/sections/Playable.svelte';
+  import Theory from '$lib/sections/Theory.svelte';
   import { parseCooperation, parseHeartbeat } from '$lib/data/cooperation';
   import { parseDefection } from '$lib/data/defection';
   import ItStops from '$lib/sections/ItStops.svelte';
@@ -44,6 +45,8 @@
   </header>
 
   <Playable />
+
+  <Theory />
 
   <Unravelling {coop} {heartbeat} />
 
