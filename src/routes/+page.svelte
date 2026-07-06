@@ -7,6 +7,8 @@
   import { parseStrategies } from '$lib/data/strategies';
   import { parsePayoffs } from '$lib/data/payoffs';
   import TheCost from '$lib/sections/TheCost.svelte';
+  import ItWorks from '$lib/sections/ItWorks.svelte';
+  import { parseSimulation, parseEmpiricalShares } from '$lib/data/simulation';
   import type { PageProps } from './$types';
   let { data }: PageProps = $props();
   const coop = $derived(parseCooperation(data.coopRaw));
@@ -14,6 +16,8 @@
   const defection = $derived(parseDefection(data.defRaw));
   const players = $derived(parseStrategies(data.stratRaw));
   const payoffs = $derived(parsePayoffs(data.payoffsRaw));
+  const sim = $derived(parseSimulation(data.simRaw));
+  const empiricalShares = $derived(parseEmpiricalShares(data.distRaw));
 </script>
 
 <svelte:head>
@@ -43,10 +47,12 @@
 
   <TheCost {payoffs} />
 
+  <ItWorks {sim} empirical={empiricalShares} />
+
   <footer class="border-t border-hairline">
     <div class="mx-auto flex h-[40vh] max-w-xl flex-col items-center justify-center gap-3 px-6 text-center">
-      <p class="font-serif text-lg text-ink">&#8230;the floor held because thirty-six people paid for it, daily. Next: why that was enough.</p>
-      <p class="font-sans text-sm text-muted">Stage 5 &#8212; &#8220;Why it works&#8221; &#8212; is next. This is a work-in-progress preview.</p>
+      <p class="font-serif text-lg text-ink">&#8230;a stubborn tenth is all it takes. Next: what the whole month adds up to.</p>
+      <p class="font-sans text-sm text-muted">Part 9 &#8212; the coda &#8212; is next. This is a work-in-progress preview.</p>
     </div>
   </footer>
 </main>
