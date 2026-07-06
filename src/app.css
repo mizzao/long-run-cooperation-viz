@@ -1,0 +1,17 @@
+@import 'tailwindcss';
+@theme {
+  --color-paper: #FBF8F1;
+  --color-card: #FFFFFF;
+  --color-hairline: #DFD8C8;
+  --color-ink: #211E19;
+  --color-muted: #6E6759;
+  --color-coop: #15735B;
+  --color-defect: #D64A22;
+  --color-resilient: #C79008;
+  --color-accent: #2D5192;
+  --color-icon-neutral: #8B8474;
+  --font-serif: 'Newsreader', Georgia, serif;
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+html { background: var(--color-paper); color: var(--color-ink); }
