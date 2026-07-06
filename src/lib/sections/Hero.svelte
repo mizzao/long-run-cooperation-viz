@@ -1,0 +1,90 @@
+<script lang="ts">
+  import { prefersReducedMotion } from '$lib/scroll/progress';
+  import type { Heartbeat } from '$lib/data/cooperation';
+  import { hero } from '$lib/content/hero';
+
+  const { heartbeat }: { heartbeat: Heartbeat } = $props();
+
+  const reduced = prefersReducedMotion();
+
+  const W = 1240;
+  const H = 700;
+  const COLSN = 5;
+  const MW = 216;
+  const MH = 130;
+  const GX = (W - COLSN * MW) / (COLSN + 1);
+  const GY = (H - 4 * MH - 40) / 5;
+
+  const COOP = [21, 115, 91];
+  const DEFECT = [214, 74, 34];
+  const cellFill = (rate: number | null): string => {
+    if (rate === null) return '#DFD8C8';
+    const t = 1 - rate;
+    const c = COOP.map((v, i) => Math.round(v + (DEFECT[i] - v) * t));
+    return `rgb(${c[0]} ${c[1]} ${c[2]})`;
+  };
+
+  interface Mini {
+    x: number;
+    y: number;
+    day: number;
+    cells: { x: number; y: number; f: string }[];
+  }
+
+  const minis: Mini[] = (() => {
+    const out: Mini[] = [];
+    for (let d = 1; d <= 20; d++) {
+      const row = Math.floor((d - 1) / COLSN);
+      const col = (d - 1) % COLSN;
+      const x = GX + col * (MW + GX);
+      const y = GY + row * (MH + GY) + 20;
+      const rates = heartbeat[String(d) as keyof Heartbeat] as (number | null)[];
+      const cells: Mini['cells'] = [];
+      const cw = MW / 20;
+      const ch = MH / 10;
+      for (let g = 0; g < 20; g++) {
+        for (let r = 0; r < 10; r++) {
+          cells.push({ x: x + g * cw, y: y + r * ch, f: cellFill(rates[g * 10 + r] ?? null) });
+        }
+      }
+      out.push({ x, y, day: d, cells });
+    }
+    return out;
+  })();
+</script>
+
+<header class="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 text-center">
+  <svg viewBox="0 0 {W} {H}" class="absolute inset-0 h-full w-full opacity-[0.17]" preserveAspectRatio="xMidYMid slice"
+       role="img" aria-label={hero.aria}>
+    {#each minis as m}
+      <g style={reduced ? '' : `animation: hero-day-in 0.9s ease ${(m.day - 1) * 0.1}s both`}>
+        {#each m.cells as cell}
+          <rect x={cell.x} y={cell.y} width={MW / 20 - 1.6} height={MH / 10 - 1.6} rx="1" fill={cell.f} />
+        {/each}
+      </g>
+    {/each}
+  </svg>
+  <div class="pointer-events-none absolute inset-0"
+       style="background: radial-gradient(ellipse 62% 52% at 50% 46%, #FBF8F1F2 0%, #FBF8F1B0 55%, #FBF8F100 100%)"></div>
+
+  <div class="relative">
+    <p class="font-sans text-xs uppercase tracking-[0.25em] text-muted">{hero.kicker}</p>
+    <h1 class="mt-4 font-serif text-5xl sm:text-7xl text-ink">{hero.title}</h1>
+    <p class="mx-auto mt-6 max-w-2xl font-serif text-xl leading-relaxed text-muted">{hero.subtitle}</p>
+    <p class="mt-8 font-sans text-xs text-muted">{hero.citation}</p>
+  </div>
+
+  <p class="absolute bottom-5 right-6 max-w-xs text-right font-sans text-[11px] leading-snug text-muted opacity-80">{hero.backdropNote}</p>
+  <p class="absolute bottom-8 animate-bounce font-sans text-xs uppercase tracking-widest text-muted motion-reduce:animate-none">{hero.scroll}</p>
+</header>
+
+<style>
+  @keyframes -global-hero-day-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+</style>

@@ -1,5 +1,6 @@
 <script lang="ts">
   import Unravelling from '$lib/sections/Unravelling.svelte';
+  import Hero from '$lib/sections/Hero.svelte';
   import Playable from '$lib/sections/Playable.svelte';
   import Theory from '$lib/sections/Theory.svelte';
   import Experiment from '$lib/sections/Experiment.svelte';
@@ -34,18 +35,7 @@
 </svelte:head>
 
 <main class="bg-paper text-ink">
-  <header class="relative flex min-h-[85vh] flex-col items-center justify-center px-6 text-center">
-    <p class="font-sans text-xs uppercase tracking-[0.25em] text-muted">A visual essay</p>
-    <h1 class="mt-4 font-serif text-5xl sm:text-7xl text-ink">The Resilient 40%</h1>
-    <p class="mt-6 max-w-2xl font-serif text-xl leading-relaxed text-muted">
-      374,251 decisions. 94 people. 20 consecutive weekdays of the Prisoner&#8217;s Dilemma.
-      One question: does cooperation survive experience?
-    </p>
-    <p class="mt-8 font-sans text-xs text-muted">
-      Based on Mao, Dworkin, Suri &amp; Watts &#183; <span class="italic">Nature Communications</span> 8:13800 (2017)
-    </p>
-    <p class="absolute bottom-8 animate-bounce font-sans text-xs uppercase tracking-widest text-muted motion-reduce:animate-none">Scroll</p>
-  </header>
+  <Hero {heartbeat} />
 
   <Playable />
 
