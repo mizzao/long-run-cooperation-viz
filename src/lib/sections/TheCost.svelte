@@ -172,7 +172,7 @@
           {#each thecost.captions as cap}
             <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
                style="opacity: {windowEnv(progress, cap.at, cap.until)}">
-              <span class="absolute right-2 top-1 font-mono text-[11px] text-muted opacity-60">P7C{thecost.captions.indexOf(cap) + 1}</span>
+              
               <RichText text={cap.text} />
             </p>
           {/each}

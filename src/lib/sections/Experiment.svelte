@@ -265,7 +265,7 @@
         {#if !reduced && f.dealEnv > 0.01}
           <div class="pointer-events-none absolute inset-x-0 top-[54%] mx-auto max-w-xl px-6 text-center"
                style="opacity: {f.dealEnv}; transform: translateY(calc(-50% + {(1 - f.dealEnv) * 12}px))">
-            <span class="absolute right-4 -top-5 font-mono text-[11px] text-muted opacity-60">{experiment.rules.devId}</span>
+            
             <p class="font-sans text-xs uppercase tracking-[0.22em] text-muted">{experiment.rules.title}</p>
             <div class="mx-auto mt-3 h-px w-8 bg-hairline"></div>
             <ul class="mt-4 space-y-2.5">
@@ -281,7 +281,7 @@
       <div class="{reduced ? 'relative' : 'relative h-36 shrink-0'}">
         {#if reduced}
           <div class="relative mx-auto mb-3 max-w-lg rounded border border-hairline bg-card p-6">
-            <span class="absolute right-3 top-2 font-mono text-[11px] text-muted opacity-60">{experiment.rules.devId}</span>
+            
             <p class="text-center font-sans text-xs uppercase tracking-widest text-muted">{experiment.rules.title}</p>
             <ul class="mt-3 space-y-2">
               {#each experiment.rules.items as item}
@@ -298,7 +298,7 @@
           {#if reduced || env > 0.01}
             <div class="{reduced ? 'relative mb-3' : 'absolute inset-x-0 -top-14'} mx-auto max-w-2xl rounded border border-hairline bg-card/95 px-6 py-4 text-center"
                  style={reduced ? '' : `opacity: ${env}; transform: translateY(${(1 - env) * 10}px)`}>
-              <span class="absolute right-2 top-1 font-mono text-[10px] text-muted opacity-60">{c.id}</span>
+              
               <p class="font-serif text-[15px] leading-relaxed text-ink"><RichText text={c.text} /></p>
             </div>
           {/if}

@@ -164,7 +164,7 @@
 
       {:else}
         <div class="relative w-full max-w-2xl rounded border border-hairline bg-card/95 p-8 text-center">
-          <span class="absolute right-3 top-2 font-mono text-[11px] text-muted opacity-60">{playable.reveal.devId}</span>
+          
           <p class="font-sans text-xs uppercase tracking-widest text-muted">{playable.reveal.title}</p>
           {#if g1}
             <div class="mx-auto mt-5 grid w-fit grid-cols-1 gap-x-12 gap-y-3 sm:grid-cols-2">

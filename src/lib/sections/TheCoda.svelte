@@ -80,7 +80,7 @@
         <div class="absolute inset-x-0 top-[12%] mx-auto max-w-lg rounded border border-hairline bg-card/97 p-6" style="opacity: {f.cavEnv}">
           <p class="relative font-sans text-xs uppercase tracking-widest text-muted">
             {thecoda.caveats.title}
-            <span class="absolute right-0 top-0 font-mono text-[11px] text-muted opacity-60">{thecoda.caveats.devId}</span>
+            
           </p>
           <ul class="mt-4 space-y-3">
             {#each thecoda.caveats.items as item}
@@ -113,7 +113,7 @@
             {#each thecoda.captions as cap}
               <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
                  style="opacity: {windowEnv(progress, cap.at, cap.until)}">
-                <span class="absolute right-2 top-1 font-mono text-[11px] text-muted opacity-60">P9C{thecoda.captions.indexOf(cap) + 1}</span>
+                
                 <RichText text={cap.text} />
               </p>
             {/each}

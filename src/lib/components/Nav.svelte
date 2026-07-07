@@ -5,7 +5,7 @@
   // Waypoints = every caption position across the story (plus the top of scenes
   // that have no captions). Sections expose their caption progress via data-caps.
   let waypoints = $state<number[]>([]);
-  let showTop = $state(false);
+  let show = $state(false);
 
   function collect() {
     const main = document.querySelector('main');
@@ -33,7 +33,7 @@
   }
 
   function onScroll() {
-    showTop = window.scrollY > window.innerHeight * 0.6;
+    show = window.scrollY > window.innerHeight * 0.75;
   }
 
   onMount(() => {
@@ -69,8 +69,7 @@
   }
 </script>
 
-<div class="fixed bottom-6 right-6 z-30 flex flex-col items-center gap-3 print:hidden">
-  {#if showTop}
+<div class="fixed bottom-6 right-6 z-30 flex flex-col items-center gap-3 transition-opacity duration-500 print:hidden {show ? 'opacity-100' : 'pointer-events-none opacity-0'}">
     <button
       onclick={toTop}
       aria-label="Back to top"
@@ -83,7 +82,6 @@
         <path d="M7 14 l5 -5 5 5" />
       </svg>
     </button>
-  {/if}
 
   <div class="flex flex-col overflow-hidden rounded-full border border-hairline bg-card/95 shadow-sm backdrop-blur">
     <button
