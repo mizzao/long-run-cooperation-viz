@@ -8,12 +8,14 @@
 
   let { sim, empirical }: { sim: SimulationData; empirical: number[][] } = $props();
 
-  const COLORS = ['#8B8474', '#7A8A5A', '#A8642F', '#D64A22', '#C79008'];
+  // strategy palette after Mao et al. Fig 5 (jet ramp): T1 dark red -> T10 blue; CC = gold (resilient, site convention)
+  const COLORS = ['#7E1717', '#C62828', '#EF5A28', '#F59A23', '#EDC72B', '#9DBE3A', '#4CAE58', '#1FA88C', '#22A0C8', '#2E6FBE', '#C79008'];
   const BEATS = { draw: [0.02, 0.14], collapse: [0.44, 0.5], phase: [0.66, 0.72], welfare: [0.88, 0.92] } as const;
 
   let width = $state(1100);
   let height = $state(620);
   const mobile = $derived(width < 640);
+  const sw = $derived(mobile ? 9 : 13);  // legend swatch width
   const reduced = prefersReducedMotion();
 
   function stacked(shares: number[][], x0: number, x1: number, y0: number, y1: number) {
@@ -22,7 +24,8 @@
     const ys = (v: number) => y1 - v * (y1 - y0);
     const paths: string[] = [];
     let lower = shares.map(() => 0);
-    for (let b = 0; b < 5; b++) {
+    const nb = shares.length ? shares[0].length : 0;
+    for (let b = 0; b < nb; b++) {
       const upper = lower.map((v, i) => v + shares[i][b]);
       const top = upper.map((v, i) => `${i === 0 ? 'M' : 'L'} ${xs(i)} ${ys(v)}`).join(' ');
       const bottom = [...lower].reverse().map((v, i) => `L ${xs(n - 1 - i)} ${ys(v)}`).join(' ');
@@ -34,7 +37,7 @@
 
   interface TipLine { text: string; color?: string }
   let tip = $state<{ x: number; y: number; lines: TipLine[] } | null>(null);
-  const GROUP_LABELS = ['earlier / mixed', 'defect round 8', 'defect round 9', 'defect round 10', 'cooperate always'];
+  const GROUP_LABELS = ['defect round 1', 'defect round 2', 'defect round 3', 'defect round 4', 'defect round 5', 'defect round 6', 'defect round 7', 'defect round 8', 'defect round 9', 'defect round 10', 'cooperate always'];
 
   function tipAt(e: MouseEvent, lines: TipLine[]) {
     const svg = (e.currentTarget as SVGGraphicsElement).ownerSVGElement;
@@ -48,7 +51,10 @@
     const idx = Math.max(0, Math.min(shares.length - 1, Math.round(rel * (shares.length - 1))));
     const row = shares[idx];
     const lines: TipLine[] = [{ text: `${title} - ${unit} ${idx + 1}` }];
-    for (let b = 4; b >= 0; b--) lines.push({ text: `${GROUP_LABELS[b]}: ${Math.round(row[b] * 100)}%`, color: COLORS[b] });
+    for (let b = row.length - 1; b >= 0; b--) {
+      if (row[b] < 0.005) continue;
+      lines.push({ text: `${GROUP_LABELS[b]}: ${Math.round(row[b] * 100)}%`, color: COLORS[b] });
+    }
     tipAt(e, lines);
   }
 
@@ -91,11 +97,12 @@
 
           <g opacity={f.panelsOpacity}>
             <g opacity={Math.min(1, f.draw * 2)}>
-              {#each itworks.chart.legend as lg, li}
-                {@const lx = m.left + li * (mobile ? 118 : 178)}
-                <rect x={lx} y={m.top - 46} width="10" height="10" rx="2" fill={COLORS[lg.key]} opacity="0.85" />
-                <text x={lx + 15} y={m.top - 37} class="font-sans" font-size="11" fill="#6E6759">{mobile ? lg.label.split(' ')[0] : lg.label}</text>
+              {#each COLORS as col, b}
+                <rect x={m.left + b * sw} y={m.top - 54} width={sw - 0.5} height="7" fill={col} opacity="0.9" />
               {/each}
+              <text x={m.left} y={m.top - 33} class="font-sans" font-size="10" fill="#6E6759">defect round 1</text>
+              <text x={m.left + 9 * sw + sw / 2} y={m.top - 33} text-anchor="middle" class="font-sans" font-size="10" fill="#6E6759">10</text>
+              <text x={m.left + 11 * sw + 8} y={m.top - 44} class="font-sans" font-size="10" fill="#6E6759">cooperate always</text>
               <g transform="translate({m.left - 38} {m.top + panelH / 2}) rotate(-90)"><text text-anchor="middle" class="font-sans" font-size="12" fill="#6E6759">{itworks.chart.yTitle}</text></g>
             </g>
 

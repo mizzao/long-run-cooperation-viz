@@ -8,11 +8,10 @@ export interface SimulationData {
   experiment: { alpha: number; r: number };
 }
 
-const BUCKETS = 5; // earlier(T1-7), T8, T9, T10, CC
+const BUCKETS = 11; // T1..T10 + CC (full strategy resolution)
 
 function bucketRow(row: number[]): number[] {
-  const early = row.slice(0, 7).reduce((s, v) => s + v, 0);
-  return [early, row[7], row[8], row[9], row[10]];
+  return row.slice(0, 11);
 }
 
 export function parseSimulation(raw: unknown): SimulationData {
@@ -36,9 +35,9 @@ export function parseEmpiricalShares(raw: unknown): number[][] {
   for (let d = 1; d <= 20; d++) {
     const day = r[String(d)] ?? {};
     const get = (k: string) => day[k] ?? 0;
-    let early = get('other');
-    for (let t = 1; t <= 7; t++) early += get('T' + t);
-    const row = [early, get('T8'), get('T9'), get('T10'), get('CC')];
+    const row: number[] = [];
+    for (let t = 1; t <= 10; t++) row.push(get('T' + t));
+    row.push(get('CC'));
     const tot = row.reduce((s, v) => s + v, 0) || 1;
     out.push(row.map((v) => v / tot));
   }
