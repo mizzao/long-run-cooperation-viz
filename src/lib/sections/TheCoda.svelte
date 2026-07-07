@@ -16,6 +16,8 @@
   const mobile = $derived(width < 640);
   const reduced = prefersReducedMotion();
 
+  const target = $derived(welfare.overallWelfare * 100);
+
   const gridSlot = $derived.by(() => {
     const idx = Array.from({ length: players.length }, (_, i) => i);
     let s = 7;
@@ -33,8 +35,9 @@
   function frame(p: number) {
     if (reduced) p = 1;
     return {
-      num: beat(p, 0.02, 0.18),
-      numEnv: reduced ? 1 : Math.min(1, beat(p, 0.02, 0.06)) * (1 - beat(p, 0.34, 0.4)),
+      num: beat(p, 0.03, 0.12),
+      numEnv: reduced ? 1 : Math.min(1, beat(p, 0.02, 0.07)) * (1 - beat(p, 0.34, 0.4)),
+      subEnv: reduced ? 1 : Math.min(1, beat(p, 0.13, 0.19)) * (1 - beat(p, 0.34, 0.4)),
       crowd: beat(p, 0.38, 0.48),
       gold: beat(p, 0.5, 0.58),
       crowdEnv: reduced ? 0 : Math.min(beat(p, 0.38, 0.44), 1 - beat(p, 0.66, 0.72)),
@@ -54,11 +57,11 @@
       <h2 class="font-serif text-3xl sm:text-4xl text-ink">{thecoda.title}</h2>
       <div class="relative mt-2 min-h-72 grow" bind:clientWidth={width} bind:clientHeight={height}>
 
-        <div class="absolute inset-x-0 top-[18%] text-center" style="opacity: {f.numEnv}">
-          <p class="font-serif text-ink" style="font-size: {mobile ? 88 : 148}px; line-height: 1">
-            {(welfare.overallWelfare * 100 * (reduced ? 1 : f.num)).toFixed(1)}%
+        <div class="absolute inset-x-0 top-[18%] text-center">
+          <p class="font-serif text-ink" style="font-size: {mobile ? 88 : 148}px; line-height: 1; opacity: {f.numEnv}">
+            {(target * f.num).toFixed(1)}%
           </p>
-          <p class="mx-auto mt-4 max-w-md font-sans text-sm text-muted">{thecoda.numberSub}</p>
+          <p class="mx-auto mt-4 max-w-md font-sans text-sm text-muted" style="opacity: {f.subEnv}">{thecoda.numberSub}</p>
         </div>
 
         <svg class="absolute inset-0" {width} {height} style="opacity: {f.crowdEnv}" role="img" aria-label="The 94 participants; the 36 resilient cooperators highlighted in gold">
@@ -95,8 +98,6 @@
             <a class="text-accent underline decoration-hairline underline-offset-4" href={thecoda.credits.dataUrl} target="_blank" rel="noopener">{thecoda.credits.dataLabel}</a>
           </p>
           <p class="mx-auto mt-6 max-w-md font-sans text-xs leading-relaxed text-muted">{thecoda.credits.method}</p>
-          <p class="mt-6 font-serif text-base text-ink">{thecoda.credits.byline}</p>
-          <p class="mt-8 font-sans text-xs uppercase tracking-widest text-muted">{thecoda.credits.teaser}</p>
         </div>
       </div>
       {#if reduced}

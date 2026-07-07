@@ -25,7 +25,5 @@ export const thecoda = {
     dataUrl: 'https://osf.io/64z8u/',
     dataLabel: 'original data (OSF)',
     method: 'All charts are computed from the raw experiment records; the learning model is re-implemented from the paper\u2019s methods.',
-    byline: 'A visual essay by Azeem, with Andrew Mao.',
-    teaser: 'Coming next: explore any single day of the experiment.'
   }
 } as const;
