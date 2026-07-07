@@ -3,7 +3,7 @@
   import type { Snippet } from 'svelte';
   import { prefersReducedMotion } from './progress';
 
-  let { heightVh = 300, children }: { heightVh?: number; children: Snippet<[{ progress: number }]> } = $props();
+  let { heightVh = 300, caps, children }: { heightVh?: number; caps?: number[]; children: Snippet<[{ progress: number }]> } = $props();
   let wrapper: HTMLElement;
   let progress = $state(0);
   const reducedMode = prefersReducedMotion();
@@ -30,7 +30,7 @@
   });
 </script>
 
-<section bind:this={wrapper} style={reducedMode ? '' : `height: ${heightVh}vh`} class="relative">
+<section bind:this={wrapper} data-caps={caps?.join(',')} style={reducedMode ? '' : `height: ${heightVh}vh`} class="relative">
   <div class={reducedMode ? 'min-h-screen' : 'sticky top-0 h-screen overflow-hidden'}>
     {@render children({ progress })}
   </div>

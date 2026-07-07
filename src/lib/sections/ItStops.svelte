@@ -86,7 +86,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 660}>
+<ScrollScene heightVh={reduced ? 100 : 660} caps={itstops.captions.map((c) => (c.at + c.until) / 2)}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const plotRight = width - box.margin.right}

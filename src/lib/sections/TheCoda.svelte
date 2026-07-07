@@ -48,7 +48,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 540}>
+<ScrollScene heightVh={reduced ? 100 : 540} caps={thecoda.captions.map((c) => (c.at + c.until) / 2)}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const spacing = mobile ? 24 : 34}

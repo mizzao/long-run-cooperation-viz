@@ -73,7 +73,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 800}>
+<ScrollScene heightVh={reduced ? 100 : 800} caps={itworks.captions.map((c) => (c.at + c.until) / 2)}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const m = mobile ? { top: 72, right: 24, bottom: 56, left: 40 } : { top: 78, right: 64, bottom: 64, left: 64 }}

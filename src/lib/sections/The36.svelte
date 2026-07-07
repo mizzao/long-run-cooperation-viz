@@ -126,7 +126,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 680}>
+<ScrollScene heightVh={reduced ? 100 : 680} caps={the36.captions.map((c) => (c.at + c.until) / 2)}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const baseY = area.y + area.h}

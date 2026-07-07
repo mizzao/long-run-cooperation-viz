@@ -76,7 +76,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 660}>
+<ScrollScene heightVh={reduced ? 100 : 660} caps={thecost.captions.map((c) => (c.at + c.until) / 2)}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const clipW = margin.left + (width - margin.left - margin.right) * f.lines}

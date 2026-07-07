@@ -141,7 +141,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 820}>
+<ScrollScene heightVh={reduced ? 100 : 820} caps={experiment.captions.map((c) => (c.at + c.until) / 2)}>
   {#snippet children({ progress }: { progress: number })}
     {@const f = frame(reduced ? 1 : progress)}
     {@const stageA = reduced ? 0 : f.stageA}

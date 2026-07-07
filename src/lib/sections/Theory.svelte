@@ -52,7 +52,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 680}>
+<ScrollScene heightVh={reduced ? 100 : 680} caps={theory.captions.map((c) => (c.at + c.until) / 2)}>
   {#snippet children({ progress }: { progress: number })}
     {@const f = frame(reduced ? 1 : progress)}
     <div class="mx-auto flex h-full w-full max-w-7xl flex-col px-6 pt-10">

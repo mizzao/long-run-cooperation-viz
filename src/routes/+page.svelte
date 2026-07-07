@@ -1,5 +1,6 @@
 <script lang="ts">
   import Unravelling from '$lib/sections/Unravelling.svelte';
+  import Nav from '$lib/components/Nav.svelte';
   import Hero from '$lib/sections/Hero.svelte';
   import Playable from '$lib/sections/Playable.svelte';
   import Theory from '$lib/sections/Theory.svelte';
@@ -57,3 +58,5 @@
 
   <footer class="h-[12vh]"></footer>
 </main>
+
+<Nav />

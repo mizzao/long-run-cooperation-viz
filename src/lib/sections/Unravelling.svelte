@@ -126,7 +126,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 680}>
+<ScrollScene heightVh={reduced ? 100 : 680} caps={unravelling.captions.map((c) => (c.at + c.until) / 2)}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const plotBottom = height - box.margin.bottom}
