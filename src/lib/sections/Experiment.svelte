@@ -134,9 +134,9 @@
     const singleFade = 1 - beat(p, 0.66, 0.69); // labels/annotations fade as flight starts
     const strip = 1 - beat(p, 0.72, 0.732);     // flown strip hands off to the column's copy
     const col1T = beat(p, 0.72, 0.78);
-    const followT = beat(p, 0.92, 0.965);
-    const colT = (i: number) => (i === 0 ? col1T : beat(p, 0.79 + (i - 1) * 0.006, 0.79 + (i - 1) * 0.006 + 0.014));
-    const gapT = (g: number) => beat(p, 0.788 + g * 0.006, 0.788 + g * 0.006 + 0.012);
+    const followT = beat(p, 0.935, 0.985);
+    const colT = (i: number) => (i === 0 ? col1T : beat(p, 0.78 + (i - 1) * 0.004, 0.78 + (i - 1) * 0.004 + 0.012));
+    const gapT = (g: number) => beat(p, 0.78 + g * 0.004, 0.78 + g * 0.004 + 0.011);
     return { people, cal, dealEnv, stageA, stageB, singleT, fly, singleFade, strip, col1T, followT, colT, gapT };
   }
 </script>
@@ -252,7 +252,7 @@
 
               <!-- axis labels -->
               {#if reduced || f.colT(19) > 0.5}
-                {@const axT = reduced ? 1 : beat(progress, 0.9, 0.93)}
+                {@const axT = reduced ? 1 : beat(progress, 0.865, 0.895)}
                 <text x={TG.x0} y={TG.y0 + 28 * TG.pitchY + 24} class="font-mono" font-size="12" fill={MUTED} opacity={axT}>{experiment.tangle.gameOne}</text>
                 <text x={Math.min(TG.x1 + TG.sw, W - 4)} y={TG.y0 + 28 * TG.pitchY + 24} text-anchor="end" class="font-mono" font-size="12" fill={MUTED} opacity={axT}>{experiment.tangle.gameTwenty}</text>
                 <text x={W / 2} y={TG.y0 + 28 * TG.pitchY + 46} text-anchor="middle" class="font-sans" font-size="12" fill={MUTED} opacity={axT}>{experiment.tangle.axis}</text>

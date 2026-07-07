@@ -21,7 +21,7 @@
   const reduced = prefersReducedMotion();
 
   const gap = $derived(stableGap(payoffs));
-  const legendX = $derived(width - margin.right - (mobile ? 210 : 240));
+  const legendX = $derived(margin.left + (width - margin.left - margin.right) * 0.44);
 
   function linePath(key: 'cc' | 'threshold') {
     return payoffs.map((r, i) => `${i === 0 ? 'M' : 'L'} ${x(r.day)} ${y(r[key].mean)}`).join(' ');
@@ -133,10 +133,10 @@
           </g>
 
           <g opacity={Math.min(1, f.axes * 1.5)}>
-            <line x1={legendX} x2={legendX + 22} y1={margin.top + 6} y2={margin.top + 6} stroke={GOLD} stroke-width="2.5" />
-            <text x={legendX + 28} y={margin.top + 10} class="font-sans" font-size="12" fill={GOLD}>{thecost.chart.resilientLabel}</text>
-            <line x1={legendX} x2={legendX + 22} y1={margin.top + 26} y2={margin.top + 26} stroke={INK} stroke-width="2" />
-            <text x={legendX + 28} y={margin.top + 30} class="font-sans" font-size="12" fill={INK}>{thecost.chart.thresholdLabel}</text>
+            <line x1={legendX} x2={legendX + 22} y1={margin.top + 72} y2={margin.top + 72} stroke={GOLD} stroke-width="2.5" />
+            <text x={legendX + 28} y={margin.top + 76} class="font-sans" font-size="12" fill={GOLD}>{thecost.chart.resilientLabel}</text>
+            <line x1={legendX} x2={legendX + 22} y1={margin.top + 92} y2={margin.top + 92} stroke={INK} stroke-width="2" />
+            <text x={legendX + 28} y={margin.top + 96} class="font-sans" font-size="12" fill={INK}>{thecost.chart.thresholdLabel}</text>
           </g>
           {#if f.lines > 0.5}
             <rect x={margin.left} y={margin.top} width={width - margin.left - margin.right} height={plotBottom - margin.top} role="presentation" fill="transparent" style="pointer-events: all" onmousemove={dayTip} onmouseleave={() => (tip = null)} />

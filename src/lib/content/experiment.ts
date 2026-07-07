@@ -23,18 +23,18 @@ export const experiment = {
     {
       id: 'P3C4',
       at: 0.6,
-      until: 0.72,
+      until: 0.78,
       text: 'One real game from the first afternoon: two strangers, ten rounds. Each cell is one decision - green for [c]cooperate[/], red for [d]defect[/]. Twenty-six pairs played the session’s first game at the same time.'
     },
     {
       id: 'P3C5',
-      at: 0.78,
-      until: 0.905,
+      at: 0.85,
+      until: 0.93,
       text: 'After each game the pairs reshuffled: a new anonymous partner every game, twenty games a session. Players never saw names or histories, so no one could build a reputation. Each game stood on its own.'
     },
     {
       id: 'P3C6',
-      at: 0.915,
+      at: 0.935,
       until: 1,
       text: 'The dark line follows one player through all twenty games. This is one session of one day. The full experiment ran two sessions a day for twenty days: [k]374,251[/] recorded decisions. The next sections show how they changed over the month.'
     }
