@@ -94,6 +94,35 @@
   function colCenterX(gi: number) {
     return area.x + (gi + 0.5) * area.w / 5;
   }
+
+  interface TipLine { text: string; color?: string }
+  let tip = $state<{ x: number; y: number; lines: TipLine[] } | null>(null);
+  function tipAt(e: MouseEvent, lines: TipLine[]) {
+    const svg = (e.currentTarget as SVGGraphicsElement).ownerSVGElement;
+    if (!svg) return;
+    const r = svg.getBoundingClientRect();
+    tip = { x: e.clientX - r.left, y: e.clientY - r.top, lines };
+  }
+  function columnTip(e: MouseEvent) {
+    const el = (e.currentTarget as SVGGraphicsElement).ownerSVGElement;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const gi = Math.max(0, Math.min(4, Math.floor((e.clientX - rect.left - area.x) / (area.w / 5))));
+    const gname = GROUP_ORDER[gi];
+    const cnt = counts[gname];
+    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+    const cx = area.x + (gi + 0.5) * (area.w / 5);
+    const rowsN = Math.ceil(cnt / perRow);
+    const halfW = ((perRow - 1) / 2) * spacing + 0.6 * spacing + 14;
+    const yBottom = area.y + area.h + 0.6 * spacing + 14;
+    const yTop = area.y + area.h - (rowsN - 1) * spacing - 0.7 * spacing - 14;
+    if (Math.abs(mx - cx) > halfW || my < yTop || my > yBottom) { tip = null; return; }
+    tipAt(e, [
+      { text: the36.chart.groupLabels[gname], color: gname === 'CC' ? GOLD : NEUTRAL },
+      { text: `${cnt} of ${players.length} players` },
+      { text: `${Math.round((cnt / players.length) * 100)}% of the population` }
+    ]);
+  }
 </script>
 
 <ScrollScene heightVh={reduced ? 100 : 680}>
@@ -145,7 +174,20 @@
               <text x={colCenterX(0)} y={area.y - 12} text-anchor="middle" class="font-sans" font-size="12" fill="#6E6759">{the36.chart.statSub}</text>
             </g>
           {/if}
+          {#if f.m > 0.7}
+            <rect x={area.x} y={area.y} width={area.w} height={baseY + 40 - area.y} role="presentation" fill="transparent" style="pointer-events: all" onmousemove={columnTip} onmouseleave={() => (tip = null)} />
+          {/if}
         </svg>
+        {#if tip && f.m > 0.7}
+          <div class="pointer-events-none absolute z-20 rounded border border-hairline bg-card p-2 font-sans text-xs text-ink" style="left: {Math.min(tip.x + 14, width - 220)}px; top: {tip.y + 12}px; min-width: 150px">
+            {#each tip.lines as l, li}
+              <div class="flex items-center gap-1.5 {li === 0 ? 'font-medium' : ''}">
+                {#if l.color}<span class="inline-block h-2 w-2 rounded-full" style="background: {l.color}"></span>{/if}
+                <span>{l.text}</span>
+              </div>
+            {/each}
+          </div>
+        {/if}
       </div>
       {#if reduced}
         <div class="mx-auto w-full max-w-xl space-y-3 pb-8 pt-4">

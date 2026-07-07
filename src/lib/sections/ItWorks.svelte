@@ -203,7 +203,7 @@
             </g>
           {/if}
         </svg>
-        {#if tip}
+        {#if tip && (f.panelsOpacity > 0.5 || f.phaseOpacity > 0.3 || f.welfareOpacity > 0.3)}
           <div class="pointer-events-none absolute z-20 rounded border border-hairline bg-card p-2 font-sans text-xs text-ink" style="left: {Math.min(tip.x + 14, width - 220)}px; top: {tip.y + 12}px; min-width: 150px">
             {#each tip.lines as l, li}
               <div class="flex items-center gap-1.5 {li === 0 ? 'font-medium' : ''}">

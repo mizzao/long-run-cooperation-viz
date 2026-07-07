@@ -62,6 +62,27 @@
     if (reduced) return 0;
     return 1 - beat(p, 0.56, 0.62);
   }
+
+  interface TipLine { text: string; color?: string }
+  let tip = $state<{ x: number; y: number; lines: TipLine[] } | null>(null);
+  function tipAt(e: MouseEvent, lines: TipLine[]) {
+    const svg = (e.currentTarget as SVGGraphicsElement).ownerSVGElement;
+    if (!svg) return;
+    const r = svg.getBoundingClientRect();
+    tip = { x: e.clientX - r.left, y: e.clientY - r.top, lines };
+  }
+  function histTip(e: MouseEvent, panelLeft: number, cellW: number) {
+    const el = (e.currentTarget as SVGGraphicsElement).ownerSVGElement;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const di = Math.max(0, Math.min(19, Math.floor((e.clientX - rect.left - panelLeft) / cellW)));
+    const fr = histGroups[di];
+    const lines: TipLine[] = [{ text: `day ${di + 1} - first defection` }];
+    for (let bi = 0; bi < 5; bi++) {
+      lines.push({ text: `${itstops.chart.legend[bi].label}: ${Math.round(fr[bi] * 100)}%`, color: HIST_COLOR_LIST[bi] });
+    }
+    tipAt(e, lines);
+  }
 </script>
 
 <ScrollScene heightVh={reduced ? 100 : 660}>
@@ -161,8 +182,21 @@
                 {/if}
               {/each}
             </g>
+            {#if f.histT > 0.5}
+              <rect x={box.margin.left} y={panelY} width={innerW} height={panelH * f.histT} role="presentation" fill="transparent" style="pointer-events: all" onmousemove={(e) => histTip(e, box.margin.left, cellW)} onmouseleave={() => (tip = null)} />
+            {/if}
           {/if}
         </svg>
+        {#if tip && f.histT > 0.5}
+          <div class="pointer-events-none absolute z-20 rounded border border-hairline bg-card p-2 font-sans text-xs text-ink" style="left: {Math.min(tip.x + 14, width - 220)}px; top: {tip.y + 12}px; min-width: 150px">
+            {#each tip.lines as l, li}
+              <div class="flex items-center gap-1.5 {li === 0 ? 'font-medium' : ''}">
+                {#if l.color}<span class="inline-block h-2 w-2 rounded-full" style="background: {l.color}"></span>{/if}
+                <span>{l.text}</span>
+              </div>
+            {/each}
+          </div>
+        {/if}
       </div>
       {#if reduced}
         <div class="mx-auto w-full max-w-xl space-y-3 pb-8 pt-4">

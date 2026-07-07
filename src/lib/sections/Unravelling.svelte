@@ -95,6 +95,34 @@
   const leaderTopY = $derived(y(0.22));
   const showCallout = $derived(width >= 1180);
   const dayLabels = [1, 5, 10, 15, 20];
+
+  interface TipLine { text: string; color?: string }
+  let hover = $state<{ x: number; y: number; lines: TipLine[] } | null>(null);
+  function tipAt(e: MouseEvent, lines: TipLine[]) {
+    const svg = (e.currentTarget as SVGGraphicsElement).ownerSVGElement;
+    if (!svg) return;
+    const r = svg.getBoundingClientRect();
+    hover = { x: e.clientX - r.left, y: e.clientY - r.top, lines };
+  }
+  function roundsTip(e: MouseEvent, clipX: number) {
+    const el = (e.currentTarget as SVGGraphicsElement).ownerSVGElement;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const innerW = box.width - box.margin.left - box.margin.right;
+    const maxG = Math.max(1, Math.round(1 + ((clipX - box.margin.left) / innerW) * 399));
+    let g = Math.round(1 + ((e.clientX - rect.left - box.margin.left) / innerW) * 399);
+    g = Math.max(1, Math.min(Math.min(400, maxG), g));
+    const day = coop.dayOfGame[g - 1];
+    const cy = e.clientY - rect.top;
+    const ys = ROUND_KEYS.map((k) => coop.rounds[k][g - 1]?.rate).filter((r): r is number => r != null).map((r) => y(r));
+    if (ys.length && (cy < Math.min(...ys) - 40 || cy > Math.max(...ys) + 40)) { hover = null; return; }
+    const lines: TipLine[] = [{ text: `day ${day}, game ${g}` }];
+    for (const k of ROUND_KEYS) {
+      const rate = coop.rounds[k][g - 1]?.rate;
+      lines.push({ text: `round ${k}: ${rate == null ? '\u2014' : Math.round(rate * 100) + '%'}`, color: ROUND_COLORS[k] });
+    }
+    tipAt(e, lines);
+  }
 </script>
 
 <ScrollScene heightVh={reduced ? 100 : 680}>
@@ -210,7 +238,20 @@
               <text x={calloutX} y={calloutY + 8} text-anchor="middle" class="font-mono" font-size="12" fill="#D64A22">51% on day 1 &#8594; 26% by day 20</text>
             {/if}
           </g>
+          {#if f.b > 0.9}
+            <rect x={box.margin.left} y={box.margin.top} width={width - box.margin.left - box.margin.right} height={plotBottom - box.margin.top} role="presentation" fill="transparent" style="pointer-events: all" onmousemove={(e) => roundsTip(e, f.curveClip)} onmouseleave={() => (hover = null)} />
+          {/if}
         </svg>
+        {#if hover && f.b > 0.9}
+          <div class="pointer-events-none absolute z-20 rounded border border-hairline bg-card p-2 font-sans text-xs text-ink" style="left: {Math.min(hover.x + 14, width - 220)}px; top: {hover.y + 12}px; min-width: 150px">
+            {#each hover.lines as l, li}
+              <div class="flex items-center gap-1.5 {li === 0 ? 'font-medium' : ''}">
+                {#if l.color}<span class="inline-block h-2 w-2 rounded-full" style="background: {l.color}"></span>{/if}
+                <span>{l.text}</span>
+              </div>
+            {/each}
+          </div>
+        {/if}
       </div>
       {#if reduced}
         <div class="mx-auto w-full max-w-xl space-y-3 pb-8 pt-4">

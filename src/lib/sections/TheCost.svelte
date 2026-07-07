@@ -48,6 +48,31 @@
       quoteEnv: reduced ? 1 : windowEnv(p, 0.74, 1)
     };
   }
+
+  interface TipLine { text: string; color?: string }
+  let tip = $state<{ x: number; y: number; lines: TipLine[] } | null>(null);
+  function tipAt(e: MouseEvent, lines: TipLine[]) {
+    const svg = (e.currentTarget as SVGGraphicsElement).ownerSVGElement;
+    if (!svg) return;
+    const r = svg.getBoundingClientRect();
+    tip = { x: e.clientX - r.left, y: e.clientY - r.top, lines };
+  }
+  function dayTip(e: MouseEvent) {
+    const el = (e.currentTarget as SVGGraphicsElement).ownerSVGElement;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const day = Math.max(1, Math.min(20, Math.round(x.invert(e.clientX - rect.left))));
+    const row = payoffs[day - 1];
+    const cy = e.clientY - rect.top;
+    const yc = y(row.cc.mean), yt = y(row.threshold.mean);
+    if (cy < Math.min(yc, yt) - 40 || cy > Math.max(yc, yt) + 40) { tip = null; return; }
+    tipAt(e, [
+      { text: `day ${day}` },
+      { text: `resilient (CC): ${row.cc.mean.toFixed(2)}`, color: GOLD },
+      { text: `threshold: ${row.threshold.mean.toFixed(2)}`, color: INK },
+      { text: `gap: ${(row.threshold.mean - row.cc.mean).toFixed(2)} pts` }
+    ]);
+  }
 </script>
 
 <ScrollScene heightVh={reduced ? 100 : 660}>
@@ -112,7 +137,21 @@
             <line x1={legendX} x2={legendX + 22} y1={margin.top + 26} y2={margin.top + 26} stroke={INK} stroke-width="2" />
             <text x={legendX + 28} y={margin.top + 30} class="font-sans" font-size="12" fill={INK}>{thecost.chart.thresholdLabel}</text>
           </g>
+          {#if f.lines > 0.5}
+            <rect x={margin.left} y={margin.top} width={width - margin.left - margin.right} height={plotBottom - margin.top} role="presentation" fill="transparent" style="pointer-events: all" onmousemove={dayTip} onmouseleave={() => (tip = null)} />
+          {/if}
         </svg>
+        {#if tip && f.lines > 0.5}
+          <div class="pointer-events-none absolute z-20 rounded border border-hairline bg-card p-2 font-sans text-xs text-ink" style="left: {Math.min(tip.x + 14, width - 220)}px; top: {tip.y + 12}px; min-width: 150px">
+            {#each tip.lines as l, li}
+              <div class="flex items-center gap-1.5 {li === 0 ? 'font-medium' : ''}">
+                {#if l.color}<span class="inline-block h-2 w-2 rounded-full" style="background: {l.color}"></span>{/if}
+                <span>{l.text}</span>
+              </div>
+            {/each}
+          </div>
+        {/if}
+
 
         {#if !mobile}
           <div class="pointer-events-none absolute right-2 top-32 w-80 rounded border border-hairline bg-card/95 p-5" style="opacity: {f.quoteEnv}">
