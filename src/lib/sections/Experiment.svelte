@@ -36,7 +36,7 @@
     return idx;
   })();
 
-  const CAL = { x: W / 2 - 110, y: 330, cw: 44, ch: 36 };
+  const CAL = { x: W / 2 - 154, y: 330, cw: 44, ch: 36 };
 
   // ---------------- stage B: the tangle (real day-1 session)
   const TG = { x0: 14, x1: 1226, y0: 66, sw: 30, pitchY: 17.2, rowH: 7, rowGap: 1.6 };
@@ -151,7 +151,7 @@
 
       <div class="relative min-h-[26rem] grow">
         <svg viewBox="0 0 {W} {H}" class="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet"
-             style="opacity: {1 - 0.55 * f.dealEnv}" role="img"
+             style="opacity: {1 - 0.35 * f.dealEnv}" role="img"
              aria-label="One real session of the experiment: 20 games of 26-28 pairs, players randomly re-matched between games">
 
           <!-- ============ stage A: people + calendar ============ -->
@@ -166,7 +166,7 @@
                 </g>
               {/each}
 
-              <g opacity={f.cal} transform="translate(0 {(1 - f.cal) * 12})">
+              <g opacity={f.cal * (1 - f.dealEnv)} transform="translate(0 {(1 - f.cal) * 12})">
                 <text x={W / 2} y={CAL.y - 30} text-anchor="middle" class="font-sans" font-size="12" fill={MUTED} letter-spacing="2">{experiment.calendar.month.toUpperCase()}</text>
                 {#each experiment.calendar.header as h, ci}
                   <text x={CAL.x + ci * CAL.cw + CAL.cw / 2} y={CAL.y - 6} text-anchor="middle" class="font-sans" font-size="10" fill={MUTED}>{h}</text>
@@ -175,7 +175,7 @@
                   {#each week as day, ci}
                     {#if day !== null}
                       {@const isRun = !(experiment.calendar.nonDays as readonly number[]).includes(day)}
-                      {@const t = beat(f.cal, (wi * 5 + ci) / 30, (wi * 5 + ci) / 30 + 0.2)}
+                      {@const t = beat(f.cal, (wi * 7 + ci) / 35, (wi * 7 + ci) / 35 + 0.2)}
                       {#if isRun}
                         <rect x={CAL.x + ci * CAL.cw + 3} y={CAL.y + wi * CAL.ch} width={CAL.cw - 6} height={CAL.ch - 6} rx="5" fill="white" stroke="#DFD8C8" opacity={t} />
                       {/if}
@@ -262,16 +262,14 @@
 
         <!-- incentive card -->
         {#if !reduced && f.dealEnv > 0.01}
-          <div class="absolute inset-x-0 top-1/2 mx-auto max-w-lg rounded border border-hairline bg-card p-6 shadow-sm"
-               style="opacity: {f.dealEnv}; transform: translateY(calc(-50% + {(1 - f.dealEnv) * 14}px))">
-            <span class="absolute right-3 top-2 font-mono text-[11px] text-muted opacity-60">{experiment.rules.devId}</span>
-            <p class="text-center font-sans text-xs uppercase tracking-widest text-muted">{experiment.rules.title}</p>
-            <ul class="mt-3 space-y-2">
+          <div class="pointer-events-none absolute inset-x-0 top-[54%] mx-auto max-w-xl px-6 text-center"
+               style="opacity: {f.dealEnv}; transform: translateY(calc(-50% + {(1 - f.dealEnv) * 12}px))">
+            <span class="absolute right-4 -top-5 font-mono text-[11px] text-muted opacity-60">{experiment.rules.devId}</span>
+            <p class="font-sans text-xs uppercase tracking-[0.22em] text-muted">{experiment.rules.title}</p>
+            <div class="mx-auto mt-3 h-px w-8 bg-hairline"></div>
+            <ul class="mt-4 space-y-2.5">
               {#each experiment.rules.items as item}
-                <li class="flex gap-3 font-serif text-[15px] leading-relaxed text-ink">
-                  <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-hairline"></span>
-                  <span>{item}</span>
-                </li>
+                <li class="font-serif text-base leading-relaxed text-ink">{item}</li>
               {/each}
             </ul>
           </div>
