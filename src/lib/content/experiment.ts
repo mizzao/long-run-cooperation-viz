@@ -6,7 +6,7 @@ export const experiment = {
       id: 'P3C1',
       at: 0.12,
       until: 0.25,
-      text: 'On 4 August 2015, 113 people logged in from 31 US states, ages 18 to 61, 47% women, recruited on Amazon Mechanical Turk. 94 of them finished the month. They are the study population.'
+      text: 'On 4 August 2015, 113 people logged in from 31 US states, ages 18 to 61, 47% women, recruited on Amazon Mechanical Turk. [b]94 of them[/] finished the month. They are the study population.'
     },
     {
       id: 'P3C2',
@@ -24,7 +24,7 @@ export const experiment = {
       id: 'P3C4',
       at: 0.6,
       until: 0.72,
-      text: 'One real game from the first afternoon: two strangers, ten rounds. Each cell is one decision - green for cooperate, red for defect. Twenty-six pairs played the session’s first game at the same time.'
+      text: 'One real game from the first afternoon: two strangers, ten rounds. Each cell is one decision - green for [c]cooperate[/], red for [d]defect[/]. Twenty-six pairs played the session’s first game at the same time.'
     },
     {
       id: 'P3C5',
@@ -36,7 +36,7 @@ export const experiment = {
       id: 'P3C6',
       at: 0.915,
       until: 1,
-      text: 'The dark line follows one player through all twenty games. This is one session of one day. The full experiment ran two sessions a day for twenty days: 374,251 recorded decisions. The next sections show how they changed over the month.'
+      text: 'The dark line follows one player through all twenty games. This is one session of one day. The full experiment ran two sessions a day for twenty days: [k]374,251[/] recorded decisions. The next sections show how they changed over the month.'
     }
   ],
   calendar: {

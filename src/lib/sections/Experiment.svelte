@@ -1,5 +1,6 @@
 <script lang="ts">
   import ScrollScene from '$lib/scroll/ScrollScene.svelte';
+  import RichText from '$lib/components/RichText.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
   import { gridPos, type Area } from '$lib/viz/peopleLayout';
   import { experiment } from '$lib/content/experiment';
@@ -298,7 +299,7 @@
             <div class="{reduced ? 'relative mb-3' : 'absolute inset-x-0 -top-14'} mx-auto max-w-2xl rounded border border-hairline bg-card/95 px-6 py-4 text-center"
                  style={reduced ? '' : `opacity: ${env}; transform: translateY(${(1 - env) * 10}px)`}>
               <span class="absolute right-2 top-1 font-mono text-[10px] text-muted opacity-60">{c.id}</span>
-              <p class="font-serif text-[15px] leading-relaxed text-ink">{c.text}</p>
+              <p class="font-serif text-[15px] leading-relaxed text-ink"><RichText text={c.text} /></p>
             </div>
           {/if}
         {/each}

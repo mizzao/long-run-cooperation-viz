@@ -6,7 +6,7 @@ export const theory = {
       id: 'P2C1',
       at: 0.15,
       until: 0.31,
-      text: 'Game theory reasons backward from the last round. Nothing comes after round 10, so a rational player defects in it - and both players know that in advance. The top row shows the result: round 10 turns red.'
+      text: 'Game theory reasons backward from the last round. Nothing comes after round 10, so a rational player defects in it - and both players know that in advance. The top row shows the result: round 10 turns [d]red[/].'
     },
     {
       id: 'P2C2',
@@ -18,19 +18,19 @@ export const theory = {
       id: 'P2C3',
       at: 0.66,
       until: 0.8,
-      text: 'By the bottom row nothing is left. The theory\u2019s prediction for fully experienced players: defect from round 1. The stepped line marks how far the collapse has reached at each level of reasoning.'
+      text: 'By the bottom row nothing is left. The theory\u2019s prediction for fully experienced players: [d]defect from round 1[/]. The stepped line marks how far the collapse has reached at each level of reasoning.'
     },
     {
       id: 'P2C4',
       at: 0.84,
       until: 0.95,
-      text: 'Real people are not this ruthless, but experience pushes them the same direction. In earlier experiments of 20-30 games, first defections came earlier game by game. Those experiments were too short to show where the slide would stop.'
+      text: 'Real people are not this ruthless, but experience pushes them the same direction. In earlier experiments of 20-30 games, [d]first defections[/] came earlier game by game. Those experiments were too short to show where the slide would stop.'
     },
     {
       id: 'P2C5',
       at: 0.955,
       until: 1,
-      text: 'Following that slide to its end would take hundreds of games, far more than one lab session can hold. The researchers\u2019 answer: run the experiment online and bring the same people back every weekday for a month.'
+      text: 'Following that slide to its end would take hundreds of games, far more than one lab session can hold. The researchers\u2019 answer: run the experiment online and bring the same people back [b]every weekday for a month[/].'
     }
   ],
   grid: {

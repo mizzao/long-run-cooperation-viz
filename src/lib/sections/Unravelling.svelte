@@ -1,5 +1,6 @@
 <script lang="ts">
   import ScrollScene from '$lib/scroll/ScrollScene.svelte';
+  import RichText from '$lib/components/RichText.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
   import { gameScale, rateScale, positionScale, type ChartBox } from '$lib/viz/scales';
   import { roundLinePath, heartbeatPath } from '$lib/viz/paths';
@@ -256,7 +257,7 @@
       {#if reduced}
         <div class="mx-auto w-full max-w-xl space-y-3 pb-8 pt-4">
           {#each unravelling.captions as cap, ci}
-            <p class="relative rounded border border-hairline bg-card/90 p-4 font-serif text-lg text-ink"><span class="absolute right-2 top-1 font-mono text-[11px] text-muted opacity-60">P4C{unravelling.captions.indexOf(cap) + 1}</span>{cap.text}</p>
+            <p class="relative rounded border border-hairline bg-card/90 p-4 font-serif text-lg text-ink"><span class="absolute right-2 top-1 font-mono text-[11px] text-muted opacity-60">P4C{unravelling.captions.indexOf(cap) + 1}</span><RichText text={cap.text} /></p>
           {/each}
         </div>
       {:else}
@@ -265,7 +266,7 @@
             <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
                style="opacity: {windowEnv(progress, cap.at, cap.until)}">
               <span class="absolute right-2 top-1 font-mono text-[11px] text-muted opacity-60">P4C{unravelling.captions.indexOf(cap) + 1}</span>
-              {cap.text}
+              <RichText text={cap.text} />
             </p>
           {/each}
         </div>
