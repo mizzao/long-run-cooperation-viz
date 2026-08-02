@@ -54,7 +54,7 @@ export const experiment = {
       id: 'P3C9',
       at: 0.955,
       until: 1,
-      text: 'This is the entire experiment: [k]374,251[/] recorded decisions, every one of them on this screen. The next sections show how they changed over the month.'
+      text: 'This is the entire experiment: [k]374,251[/] recorded decisions, every one of them on this screen - hover to look closer. The next sections show how they changed over the month.'
     }
   ],
   calendar: {

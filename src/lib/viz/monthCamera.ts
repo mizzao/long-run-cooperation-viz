@@ -55,3 +55,20 @@ export function viewport(cw: number, ch: number) {
   const s0 = Math.min(cw / W, ch / H);
   return { s0, ox: (cw - W * s0) / 2, oy: (ch - H * s0) / 2 };
 }
+
+// which day cell a world point falls in (gaps count toward the nearest cell);
+// `cell` is the day's world rect, used to keep the magnifier framed on content
+export function hitTest(xw: number, yw: number): { day: number; slot: '1pm' | '3pm'; cell: { x: number; y: number; w: number; h: number } } | null {
+  const lx = xw - TG.x0;
+  const ly = yw - TG.y0;
+  const pad = 30;
+  if (lx < -pad || ly < -pad || lx > GRID.w + pad || ly > GRID.h + pad) return null;
+  const col = Math.max(0, Math.min(4, Math.floor(lx / (SW + GX))));
+  const row = Math.max(0, Math.min(3, Math.floor(ly / (DAY_H + GY))));
+  const slot = ly - row * (DAY_H + GY) < SH + GS / 2 ? '1pm' : '3pm';
+  return {
+    day: row * 5 + col + 1,
+    slot,
+    cell: { x: TG.x0 + col * (SW + GX), y: TG.y0 + row * (DAY_H + GY), w: SW, h: DAY_H }
+  };
+}

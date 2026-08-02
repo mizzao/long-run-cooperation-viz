@@ -271,7 +271,7 @@
 
         <!-- month zoom-out: the canvas takes over from the session SVG at the crossfade -->
         {#if !reduced}
-          <div class="absolute inset-0" style="opacity: {monthReady ? f.xf : 0}">
+          <div class="pointer-events-none absolute inset-0" style="opacity: {monthReady ? f.xf : 0}">
             <MonthCanvas {progress} width={vw} height={vh} bind:ready={monthReady} />
           </div>
         {/if}
@@ -317,7 +317,7 @@
         {#each experiment.captions as c}
           {@const env = reduced ? 1 : windowEnv(progress, c.at, c.until, 0.025)}
           {#if reduced || env > 0.01}
-            <div class="{reduced ? 'relative mb-3' : 'absolute inset-x-0 -top-14'} mx-auto max-w-2xl rounded border border-hairline bg-card/95 px-6 py-4 text-center"
+            <div class="{reduced ? 'relative mb-3' : c.at >= 0.75 ? 'absolute inset-x-0 top-4' : 'absolute inset-x-0 -top-14'} mx-auto max-w-2xl rounded border border-hairline bg-card/95 px-6 py-4 text-center"
                  style={reduced ? '' : `opacity: ${env}; transform: translateY(${(1 - env) * 10}px)`}>
               
               <CapId id={c.id} />
