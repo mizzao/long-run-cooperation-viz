@@ -1,4 +1,5 @@
 <script lang="ts">
+  import CapId from '$lib/components/CapId.svelte';
   import { playable } from '$lib/content/playable';
 
   const READER = '#2D5192';
@@ -164,7 +165,7 @@
 
       {:else}
         <div class="relative w-full max-w-2xl rounded border border-hairline bg-card/95 p-8 text-center">
-          
+          <CapId id={playable.reveal.devId} />
           <p class="font-sans text-xs uppercase tracking-widest text-muted">{playable.reveal.title}</p>
           {#if g1}
             <div class="mx-auto mt-5 grid w-fit grid-cols-1 gap-x-12 gap-y-3 sm:grid-cols-2">

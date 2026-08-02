@@ -4,39 +4,57 @@ export const experiment = {
   captions: [
     {
       id: 'P3C1',
-      at: 0.12,
-      until: 0.25,
+      at: 0.084,
+      until: 0.175,
       text: 'On 4 August 2015, 113 people logged in from 31 US states, ages 18 to 61, 47% women, recruited on Amazon Mechanical Turk. [b]94 of them[/] finished the month. They are the study population.'
     },
     {
       id: 'P3C2',
-      at: 0.27,
-      until: 0.4,
+      at: 0.189,
+      until: 0.28,
       text: 'Every weekday for a month the same people returned - twenty days in all, one session at 13:00 and one at 15:00 EDT, about 35 minutes each.'
     },
     {
       id: 'P3C3',
-      at: 0.43,
-      until: 0.56,
+      at: 0.301,
+      until: 0.392,
       text: 'Long experiments usually die from dropouts, so showing up was worth real money. It worked: 94 of 113 players (83%) completed the month.'
     },
     {
       id: 'P3C4',
-      at: 0.6,
-      until: 0.78,
+      at: 0.42,
+      until: 0.546,
       text: 'One real game from the first afternoon: two strangers, ten rounds. Each cell is one decision - green for [c]cooperate[/], red for [d]defect[/]. Twenty-six pairs played the session’s first game at the same time.'
     },
     {
       id: 'P3C5',
-      at: 0.85,
-      until: 0.93,
+      at: 0.555,
+      until: 0.645,
       text: 'After each game the pairs reshuffled: a new anonymous partner every game, twenty games a session. Players never saw names or histories, so no one could build a reputation. Each game stood on its own.'
     },
     {
       id: 'P3C6',
-      at: 0.935,
+      at: 0.65,
+      until: 0.735,
+      text: 'The dark line follows one player through all twenty games: one session, one afternoon, 540 real games. Now pull back.'
+    },
+    {
+      id: 'P3C7',
+      at: 0.775,
+      until: 0.86,
+      text: 'The same afternoon, a second group played the [b]15:00 session[/]. One day of the experiment: two sessions, about 1,080 games.'
+    },
+    {
+      id: 'P3C8',
+      at: 0.865,
+      until: 0.95,
+      text: 'Twenty weekdays, two sessions each. Every panel is a session like the one you just watched - twenty games wide, up to twenty-eight pairs tall.'
+    },
+    {
+      id: 'P3C9',
+      at: 0.955,
       until: 1,
-      text: 'The dark line follows one player through all twenty games. This is one session of one day. The full experiment ran two sessions a day for twenty days: [k]374,251[/] recorded decisions. The next sections show how they changed over the month.'
+      text: 'This is the entire experiment: [k]374,251[/] recorded decisions, every one of them on this screen. The next sections show how they changed over the month.'
     }
   ],
   calendar: {

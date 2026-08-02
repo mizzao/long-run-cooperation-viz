@@ -1,6 +1,7 @@
 <script lang="ts">
   import ScrollScene from '$lib/scroll/ScrollScene.svelte';
   import RichText from '$lib/components/RichText.svelte';
+  import CapId from '$lib/components/CapId.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
   import { theory } from '$lib/content/theory';
 
@@ -95,7 +96,7 @@
         {#if !reduced && f.quoteEnv > 0.01}
           <div class="absolute inset-x-0 top-1/2 mx-auto max-w-xl rounded border border-hairline bg-card p-7 text-center shadow-sm"
                style="opacity: {f.quoteEnv}; transform: translateY(calc(-50% + {(1 - f.quoteEnv) * 14}px))">
-            
+            <CapId id={theory.quote.devId} />
             <p class="font-sans text-sm text-muted">{theory.quote.lead}</p>
             <p class="mt-3 font-serif text-xl italic leading-relaxed text-ink">&ldquo;{theory.quote.text}&rdquo;</p>
             <p class="mt-1 font-serif text-base text-muted">{theory.quote.tail}</p>
@@ -119,6 +120,8 @@
           {#if reduced || env > 0.01}
             <div class="{reduced ? 'relative mb-3' : 'absolute inset-x-0 top-0'} mx-auto max-w-2xl rounded border border-hairline bg-card/95 px-6 py-4 text-center"
                  style={reduced ? '' : `opacity: ${env}; transform: translateY(${(1 - env) * 10}px)`}>
+              
+              <CapId id={c.id} />
               
               <p class="font-serif text-[15px] leading-relaxed text-ink"><RichText text={c.text} /></p>
             </div>

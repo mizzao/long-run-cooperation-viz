@@ -1,6 +1,7 @@
 <script lang="ts">
   import ScrollScene from '$lib/scroll/ScrollScene.svelte';
   import RichText from '$lib/components/RichText.svelte';
+  import CapId from '$lib/components/CapId.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
   import { gridPos } from '$lib/viz/peopleLayout';
   import type { PlayerStrategy } from '$lib/data/strategies';
@@ -73,7 +74,7 @@
         <div class="absolute inset-x-0 top-[12%] mx-auto max-w-lg rounded border border-hairline bg-card/97 p-6" style="opacity: {f.cavEnv}">
           <p class="relative font-sans text-xs uppercase tracking-widest text-muted">
             {thecoda.caveats.title}
-            
+            <CapId id={thecoda.caveats.devId} />
           </p>
           <ul class="mt-4 space-y-3">
             {#each thecoda.caveats.items as item}
@@ -97,7 +98,7 @@
       {#if reduced}
         <div class="mx-auto w-full max-w-xl space-y-3 pb-8 pt-4">
           {#each thecoda.captions as cap}
-            <p class="relative rounded border border-hairline bg-card/90 p-4 font-serif text-lg text-ink"><RichText text={cap.text} /></p>
+            <p class="relative rounded border border-hairline bg-card/90 p-4 font-serif text-lg text-ink"><CapId id={cap.id} /><RichText text={cap.text} /></p>
           {/each}
         </div>
       {:else}
@@ -106,7 +107,7 @@
             {#each thecoda.captions as cap}
               <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
                  style="opacity: {windowEnv(progress, cap.at, cap.until)}">
-                
+                <CapId id={cap.id} />
                 <RichText text={cap.text} />
               </p>
             {/each}

@@ -1,6 +1,7 @@
 <script lang="ts">
   import ScrollScene from '$lib/scroll/ScrollScene.svelte';
   import RichText from '$lib/components/RichText.svelte';
+  import CapId from '$lib/components/CapId.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
   import type { WelfareData } from '$lib/data/welfare';
   import { thesurprise } from '$lib/content/thesurprise';
@@ -81,7 +82,7 @@
       {#if reduced}
         <div class="mx-auto w-full max-w-xl space-y-3 pb-8 pt-4">
           {#each thesurprise.captions as cap}
-            <p class="relative rounded border border-hairline bg-card/90 p-4 font-serif text-lg text-ink"><RichText text={cap.text} /></p>
+            <p class="relative rounded border border-hairline bg-card/90 p-4 font-serif text-lg text-ink"><CapId id={cap.id} /><RichText text={cap.text} /></p>
           {/each}
         </div>
       {:else}
@@ -90,6 +91,7 @@
             {#each thesurprise.captions as cap}
               <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
                  style="opacity: {windowEnv(progress, cap.at, cap.until)}">
+                <CapId id={cap.id} />
                 <RichText text={cap.text} />
               </p>
             {/each}

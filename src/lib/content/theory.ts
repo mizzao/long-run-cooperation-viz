@@ -44,6 +44,7 @@ export const theory = {
     yTitle: 'steps of reasoning'
   },
   quote: {
+    devId: 'P2Q',
     lead: 'Researchers who saw the creep in the lab extrapolated it to zero - with a caveat:',
     text: '…it is not plausible to observe cooperation rates decline to negligible levels…',
     tail: 'in any session short enough to run in a laboratory.',

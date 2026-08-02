@@ -1,12 +1,20 @@
 <script lang="ts">
   import ScrollScene from '$lib/scroll/ScrollScene.svelte';
   import RichText from '$lib/components/RichText.svelte';
+  import CapId from '$lib/components/CapId.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
   import { gridPos, type Area } from '$lib/viz/peopleLayout';
+  import { W, H, TG, colX } from '$lib/viz/tangleGeom';
+  import MonthCanvas from '$lib/viz/MonthCanvas.svelte';
   import { experiment } from '$lib/content/experiment';
   import type { Tangle } from '$lib/data/tangle';
 
   const { tangle }: { tangle: Tangle } = $props();
+
+  let vw = $state(1100);
+  let vh = $state(620);
+  let mw = $state(800);
+  let monthReady = $state(false);
 
   const NEUTRAL = '#8B8474';
   const INK = '#211E19';
@@ -17,8 +25,6 @@
   // desaturated so the semantic palette (coop green / defect red / gold) stays unique
   const playerTone = (i: number) => `hsl(${Math.round((i * 137.508) % 360)} 42% 68%)`;
 
-  const W = 1240;
-  const H = 660;
   const N = 94;
   const COLS = 16;
 
@@ -39,10 +45,8 @@
 
   const CAL = { x: W / 2 - 154, y: 330, cw: 44, ch: 36 };
 
-  // ---------------- stage B: the tangle (real day-1 session)
-  const TG = { x0: 14, x1: 1226, y0: 66, sw: 30, pitchY: 17.2, rowH: 7, rowGap: 1.6 };
-  const colX = (i: number) => TG.x0 + (i * (TG.x1 - TG.x0 - TG.sw)) / 19;
-
+  // ---------------- stage B: the tangle (real day-1 session); geometry shared
+  // with the month zoom-out canvas via tangleGeom
   interface CellR { x: number; y: number; f: string }
   interface Layout {
     cols: { x: number; cells: CellR[] }[];
@@ -124,24 +128,27 @@
   const BIG = { x: W / 2 - 190, y: 200, cw: 38, ch: 32, gap: 5 };
 
   function frame(p: number) {
-    const people = beat(p, 0.02, 0.1);
-    const cal = beat(p, 0.14, 0.22);
-    const dealEnv = windowEnv(p, 0.41, 0.54);
-    const stageA = 1 - beat(p, 0.54, 0.58);
-    const stageB = beat(p, 0.56, 0.6);
-    const singleT = beat(p, 0.58, 0.64);
-    const fly = beat(p, 0.665, 0.715);          // featured strip flies to its wave-1 slot
-    const singleFade = 1 - beat(p, 0.66, 0.69); // labels/annotations fade as flight starts
-    const strip = 1 - beat(p, 0.72, 0.732);     // flown strip hands off to the column's copy
-    const col1T = beat(p, 0.72, 0.78);
-    const followT = beat(p, 0.935, 0.985);
-    const colT = (i: number) => (i === 0 ? col1T : beat(p, 0.78 + (i - 1) * 0.004, 0.78 + (i - 1) * 0.004 + 0.012));
-    const gapT = (g: number) => beat(p, 0.78 + g * 0.004, 0.78 + g * 0.004 + 0.011);
-    return { people, cal, dealEnv, stageA, stageB, singleT, fly, singleFade, strip, col1T, followT, colT, gapT };
+    const q = Math.min(p / 0.7, 1); // stages A+B live in p 0-0.7; the zoom-out owns the rest
+    const people = beat(q, 0.02, 0.1);
+    const cal = beat(q, 0.14, 0.22);
+    const dealEnv = windowEnv(q, 0.41, 0.54);
+    const stageA = 1 - beat(q, 0.54, 0.58);
+    const stageB = beat(q, 0.56, 0.6);
+    const singleT = beat(q, 0.58, 0.64);
+    const fly = beat(q, 0.665, 0.715);          // featured strip flies to its wave-1 slot
+    const singleFade = 1 - beat(q, 0.66, 0.69); // labels/annotations fade as flight starts
+    const strip = 1 - beat(q, 0.72, 0.732);     // flown strip hands off to the column's copy
+    const col1T = beat(q, 0.72, 0.78);
+    const followT = beat(q, 0.935, 0.985);
+    const colT = (i: number) => (i === 0 ? col1T : beat(q, 0.78 + (i - 1) * 0.004, 0.78 + (i - 1) * 0.004 + 0.012));
+    const gapT = (g: number) => beat(q, 0.78 + g * 0.004, 0.78 + g * 0.004 + 0.011);
+    const axT = beat(q, 0.865, 0.895);
+    const xf = reduced ? 0 : beat(p, 0.7, 0.73); // SVG session -> canvas month crossfade
+    return { people, cal, dealEnv, stageA, stageB, singleT, fly, singleFade, strip, col1T, followT, colT, gapT, axT, xf };
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 820} caps={experiment.captions.map((c) => (c.at + c.until) / 2)}>
+<ScrollScene heightVh={reduced ? 100 : 1150} caps={experiment.captions.map((c) => (c.at + c.until) / 2)}>
   {#snippet children({ progress }: { progress: number })}
     {@const f = frame(reduced ? 1 : progress)}
     {@const stageA = reduced ? 0 : f.stageA}
@@ -150,9 +157,9 @@
       <p class="font-sans text-xs uppercase tracking-widest text-muted">{experiment.kicker}</p>
       <h2 class="font-serif text-3xl sm:text-4xl text-ink">{experiment.title}</h2>
 
-      <div class="relative min-h-[26rem] grow">
+      <div class="relative min-h-[26rem] grow" bind:clientWidth={vw} bind:clientHeight={vh}>
         <svg viewBox="0 0 {W} {H}" class="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet"
-             style="opacity: {1 - 0.35 * f.dealEnv}" role="img"
+             style="opacity: {(1 - 0.35 * f.dealEnv) * (1 - f.xf)}" role="img"
              aria-label="One real session of the experiment: 20 games of 26-28 pairs, players randomly re-matched between games">
 
           <!-- ============ stage A: people + calendar ============ -->
@@ -190,7 +197,8 @@
           {/if}
 
           <!-- ============ stage B: the session tangle ============ -->
-          {#if stageB > 0.01}
+          <!-- unmounted once the canvas fully owns the frame: 10.8k rects are not free -->
+          {#if stageB > 0.01 && (reduced || progress < 0.745)}
             <g opacity={stageB}>
               <!-- big single-game strip: draws large, then FLIES to its real wave-1 slot -->
               {#if !reduced && f.singleT > 0 && f.strip > 0.01}
@@ -252,7 +260,7 @@
 
               <!-- axis labels -->
               {#if reduced || f.colT(19) > 0.5}
-                {@const axT = reduced ? 1 : beat(progress, 0.865, 0.895)}
+                {@const axT = reduced ? 1 : f.axT}
                 <text x={TG.x0} y={TG.y0 + 28 * TG.pitchY + 24} class="font-mono" font-size="12" fill={MUTED} opacity={axT}>{experiment.tangle.gameOne}</text>
                 <text x={Math.min(TG.x1 + TG.sw, W - 4)} y={TG.y0 + 28 * TG.pitchY + 24} text-anchor="end" class="font-mono" font-size="12" fill={MUTED} opacity={axT}>{experiment.tangle.gameTwenty}</text>
                 <text x={W / 2} y={TG.y0 + 28 * TG.pitchY + 46} text-anchor="middle" class="font-sans" font-size="12" fill={MUTED} opacity={axT}>{experiment.tangle.axis}</text>
@@ -261,11 +269,18 @@
           {/if}
         </svg>
 
+        <!-- month zoom-out: the canvas takes over from the session SVG at the crossfade -->
+        {#if !reduced}
+          <div class="absolute inset-0" style="opacity: {monthReady ? f.xf : 0}">
+            <MonthCanvas {progress} width={vw} height={vh} bind:ready={monthReady} />
+          </div>
+        {/if}
+
         <!-- incentive card -->
         {#if !reduced && f.dealEnv > 0.01}
           <div class="pointer-events-none absolute inset-x-0 top-[54%] mx-auto max-w-xl px-6 text-center"
                style="opacity: {f.dealEnv}; transform: translateY(calc(-50% + {(1 - f.dealEnv) * 12}px))">
-            
+            <CapId id={experiment.rules.devId} />
             <p class="font-sans text-xs uppercase tracking-[0.22em] text-muted">{experiment.rules.title}</p>
             <div class="mx-auto mt-3 h-px w-8 bg-hairline"></div>
             <ul class="mt-4 space-y-2.5">
@@ -277,11 +292,17 @@
         {/if}
       </div>
 
+      {#if reduced}
+        <div class="relative mx-auto my-4 w-full max-w-3xl" style="aspect-ratio: 1240 / 660" bind:clientWidth={mw}>
+          <MonthCanvas progress={1} width={mw} height={(mw * 660) / 1240} />
+        </div>
+      {/if}
+
       <!-- caption band -->
-      <div class="{reduced ? 'relative' : 'relative h-36 shrink-0'}">
+      <div class="{reduced ? 'relative' : 'relative h-28 shrink-0'}">
         {#if reduced}
           <div class="relative mx-auto mb-3 max-w-lg rounded border border-hairline bg-card p-6">
-            
+            <CapId id={experiment.rules.devId} />
             <p class="text-center font-sans text-xs uppercase tracking-widest text-muted">{experiment.rules.title}</p>
             <ul class="mt-3 space-y-2">
               {#each experiment.rules.items as item}
@@ -294,10 +315,12 @@
           </div>
         {/if}
         {#each experiment.captions as c}
-          {@const env = reduced ? 1 : windowEnv(progress, c.at, c.until)}
+          {@const env = reduced ? 1 : windowEnv(progress, c.at, c.until, 0.025)}
           {#if reduced || env > 0.01}
             <div class="{reduced ? 'relative mb-3' : 'absolute inset-x-0 -top-14'} mx-auto max-w-2xl rounded border border-hairline bg-card/95 px-6 py-4 text-center"
                  style={reduced ? '' : `opacity: ${env}; transform: translateY(${(1 - env) * 10}px)`}>
+              
+              <CapId id={c.id} />
               
               <p class="font-serif text-[15px] leading-relaxed text-ink"><RichText text={c.text} /></p>
             </div>

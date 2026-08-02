@@ -1,6 +1,7 @@
 <script lang="ts">
   import ScrollScene from '$lib/scroll/ScrollScene.svelte';
   import RichText from '$lib/components/RichText.svelte';
+  import CapId from '$lib/components/CapId.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
   import { scaleLinear } from 'd3-scale';
   import { parsePayoffs, stableGap, type DayPayoff } from '$lib/data/payoffs';
@@ -164,14 +165,15 @@
       {#if reduced}
         <div class="mx-auto w-full max-w-xl space-y-3 pb-8 pt-4">
           {#each thecost.captions.slice(0, 2) as cap}
-            <p class="relative rounded border border-hairline bg-card/90 p-4 font-serif text-lg text-ink"><RichText text={cap.text} /></p>
+            <p class="relative rounded border border-hairline bg-card/90 p-4 font-serif text-lg text-ink"><CapId id={cap.id} /><RichText text={cap.text} /></p>
           {/each}
           <div class="relative rounded border border-hairline bg-card/90 p-4 text-center">
+            <CapId id={thecost.statement.id} />
             <p class="font-serif text-2xl leading-snug text-ink">{thecost.statement.title}</p>
             <p class="mt-2 font-serif text-base text-muted"><RichText text={thecost.statement.sub} /></p>
           </div>
           {#each thecost.captions.slice(2) as cap}
-            <p class="relative rounded border border-hairline bg-card/90 p-4 font-serif text-lg text-ink"><RichText text={cap.text} /></p>
+            <p class="relative rounded border border-hairline bg-card/90 p-4 font-serif text-lg text-ink"><CapId id={cap.id} /><RichText text={cap.text} /></p>
           {/each}
         </div>
       {:else}
@@ -179,12 +181,13 @@
           {#each thecost.captions as cap}
             <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
                style="opacity: {windowEnv(progress, cap.at, cap.until)}">
-
+              <CapId id={cap.id} />
               <RichText text={cap.text} />
             </p>
           {/each}
           <div class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 px-6 py-5 text-center"
                style="opacity: {windowEnv(progress, thecost.statement.at, thecost.statement.until)}">
+            <CapId id={thecost.statement.id} />
             <p class="font-serif text-2xl leading-snug text-ink">{thecost.statement.title}</p>
             <p class="mt-2 font-serif text-base text-muted"><RichText text={thecost.statement.sub} /></p>
           </div>
