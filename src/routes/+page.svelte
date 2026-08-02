@@ -8,7 +8,9 @@
   import { parseCooperation, parseHeartbeat } from '$lib/data/cooperation';
   import { parseDefection } from '$lib/data/defection';
   import ItStops from '$lib/sections/ItStops.svelte';
+  import TheSurprise from '$lib/sections/TheSurprise.svelte';
   import The36 from '$lib/sections/The36.svelte';
+  import Appendix from '$lib/sections/Appendix.svelte';
   import { parseStrategies } from '$lib/data/strategies';
   import { parsePayoffs } from '$lib/data/payoffs';
   import TheCost from '$lib/sections/TheCost.svelte';
@@ -48,13 +50,17 @@
 
   <ItStops {coop} {defection} />
 
+  <TheSurprise welfare={welfareData} />
+
   <The36 {players} />
 
   <TheCost {payoffs} />
 
-  <ItWorks {sim} empirical={empiricalShares} />
+  <TheCoda {players} />
 
-  <TheCoda welfare={welfareData} {players} />
+  <Appendix />
+
+  <ItWorks {sim} empirical={empiricalShares} />
 
   <footer class="h-[12vh]"></footer>
 </main>

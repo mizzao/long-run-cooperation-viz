@@ -1,10 +1,11 @@
 export const thecoda = {
   kicker: 'Part nine',
-  title: 'What the month added up to',
-  numberSub: 'of the way from mutual defection to the best collective outcome - sustained for twenty consecutive days',
+  title: 'The takeaway',
+  statement: 'Nice people make everyone better off.',
+  statementSub: 'The gold minority paid a small price every day to keep it true.',
   captions: [
-    { at: 0.2, until: 0.36, text: 'Across all [k]374,251[/] decisions, the population captured [k]84%[/] of the best collective outcome the game allows.' },
-    { at: 0.5, until: 0.68, text: '[c]Cooperation[/] held because a [g]minority[/] refused to defect first. Their presence made cooperating the better-paying choice for everyone else.' }
+    { at: 0.06, until: 0.3, text: 'Ninety-four strangers, twenty days, [k]374,251[/] decisions - and the society they improvised captured [k]84%[/] of the best outcome the game allows.' },
+    { at: 0.36, until: 0.56, text: 'It held because [g]thirty-six people[/] absorbed a daily loss rather than defect first. Their presence made [c]cooperating[/] the better-paying choice for everyone else.' }
   ],
   caveats: {
     title: 'What this study cannot claim',

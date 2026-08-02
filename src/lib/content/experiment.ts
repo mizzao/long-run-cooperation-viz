@@ -56,9 +56,7 @@ export const experiment = {
     devId: 'P3I',
     title: 'The deal',
     items: [
-      '$4.47 average per ~35-minute session (about $7.66/hour)',
-      'a one-time $20 bonus for completing at least 18 of the 20 sessions',
-      'miss more than two sessions and you were excluded - bonus forfeited'
+      'Every decision was played for real money - and finishing the whole month earned a bonus.'
     ]
   },
   tangle: {

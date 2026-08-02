@@ -1,5 +1,5 @@
 export const the36 = {
-  kicker: 'Part six',
+  kicker: 'Part seven',
   title: 'The thirty-six',
   captions: [
     { at: 0.03, until: 0.17, text: 'The 94 participants who completed the experiment. Each icon is one person. On average, each made [k]3,720[/] cooperate-or-defect decisions over the month.' },

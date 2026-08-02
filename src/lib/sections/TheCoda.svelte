@@ -4,10 +4,9 @@
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
   import { gridPos } from '$lib/viz/peopleLayout';
   import type { PlayerStrategy } from '$lib/data/strategies';
-  import type { WelfareData } from '$lib/data/welfare';
   import { thecoda } from '$lib/content/thecoda';
 
-  let { welfare, players }: { welfare: WelfareData; players: PlayerStrategy[] } = $props();
+  let { players }: { players: PlayerStrategy[] } = $props();
 
   const GOLD = '#C79008';
   const NEUTRAL = '#8B8474';
@@ -16,8 +15,6 @@
   let height = $state(620);
   const mobile = $derived(width < 640);
   const reduced = prefersReducedMotion();
-
-  const target = $derived(welfare.overallWelfare * 100);
 
   const gridSlot = $derived.by(() => {
     const idx = Array.from({ length: players.length }, (_, i) => i);
@@ -36,19 +33,17 @@
   function frame(p: number) {
     if (reduced) p = 1;
     return {
-      num: beat(p, 0.03, 0.12),
-      numEnv: reduced ? 1 : Math.min(1, beat(p, 0.02, 0.07)) * (1 - beat(p, 0.34, 0.4)),
-      subEnv: reduced ? 1 : Math.min(1, beat(p, 0.13, 0.19)) * (1 - beat(p, 0.34, 0.4)),
-      crowd: beat(p, 0.38, 0.48),
-      gold: beat(p, 0.5, 0.58),
-      crowdEnv: reduced ? 0 : Math.min(beat(p, 0.38, 0.44), 1 - beat(p, 0.66, 0.72)),
-      cavEnv: reduced ? 1 : Math.min(beat(p, 0.7, 0.76), 1 - beat(p, 0.86, 0.9)),
-      credEnv: reduced ? 1 : beat(p, 0.9, 0.955)
+      crowd: beat(p, 0.04, 0.16),
+      gold: beat(p, 0.2, 0.28),
+      crowdEnv: reduced ? 0 : Math.min(beat(p, 0.04, 0.1), 1 - 0.85 * beat(p, 0.32, 0.4), 1 - beat(p, 0.56, 0.64)),
+      stmtEnv: reduced ? 1 : Math.min(beat(p, 0.36, 0.44), 1 - beat(p, 0.56, 0.64)),
+      cavEnv: reduced ? 1 : Math.min(beat(p, 0.68, 0.74), 1 - beat(p, 0.84, 0.88)),
+      credEnv: reduced ? 1 : beat(p, 0.89, 0.95)
     };
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 540} caps={thecoda.captions.map((c) => (c.at + c.until) / 2)}>
+<ScrollScene heightVh={reduced ? 100 : 480} caps={thecoda.captions.map((c) => (c.at + c.until) / 2)}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const spacing = mobile ? 24 : 34}
@@ -58,11 +53,9 @@
       <h2 class="font-serif text-3xl sm:text-4xl text-ink">{thecoda.title}</h2>
       <div class="relative mt-2 min-h-72 grow" bind:clientWidth={width} bind:clientHeight={height}>
 
-        <div class="absolute inset-x-0 top-[18%] text-center">
-          <p class="font-serif text-ink" style="font-size: {mobile ? 88 : 148}px; line-height: 1; opacity: {f.numEnv}">
-            {(target * f.num).toFixed(1)}%
-          </p>
-          <p class="mx-auto mt-4 max-w-md font-sans text-sm text-muted" style="opacity: {f.subEnv}">{thecoda.numberSub}</p>
+        <div class="absolute inset-x-0 top-[30%] z-10 text-center" style="opacity: {f.stmtEnv}">
+          <p class="mx-auto max-w-3xl font-serif text-ink" style="font-size: {mobile ? 38 : 64}px; line-height: 1.14">{thecoda.statement}</p>
+          <p class="mx-auto mt-6 max-w-md font-sans text-sm text-muted">{thecoda.statementSub}</p>
         </div>
 
         <svg class="absolute inset-0" {width} {height} style="opacity: {f.crowdEnv}" role="img" aria-label="The 94 participants; the 36 resilient cooperators highlighted in gold">

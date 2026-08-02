@@ -1,5 +1,5 @@
 export const itworks = {
-  kicker: 'Part eight',
+  kicker: 'Appendix - the model',
   title: 'Why a minority is enough',
   captions: [
     { at: 0.16, until: 0.29, text: 'The paper tests the explanation with a learning model. Rational agents track what opponents play and pick the [d]defection round[/] that pays best. A fixed minority [c]cooperates unless provoked[/].' },
