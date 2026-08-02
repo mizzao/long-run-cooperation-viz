@@ -3,6 +3,12 @@ export const theory = {
   title: 'The prediction',
   captions: [
     {
+      id: 'P2C0',
+      at: 0.02,
+      until: 0.13,
+      text: 'You have just felt the pull: whatever your partner does, [d]defecting[/] pays more. Played once, the game has a single stable outcome - both defect. Economists call it the [b]Nash equilibrium[/]: the point where no one gains by changing their choice alone.'
+    },
+    {
       id: 'P2C1',
       at: 0.15,
       until: 0.31,
@@ -24,7 +30,7 @@ export const theory = {
       id: 'P2C4',
       at: 0.84,
       until: 0.95,
-      text: 'Real people are not this ruthless, but experience pushes them the same direction. In earlier experiments of 20-30 games, [d]first defections[/] came earlier game by game. Those experiments were too short to show where the slide would stop.'
+      text: 'Real people are not this ruthless. But in lab experiments of 20-30 games, [d]first defections[/] did creep earlier game by game - and the economists’ verdict was that the model is fine, the [b]people[/] are wrong: leave them in the game long enough and they will learn to defect from round 1.'
     },
     {
       id: 'P2C5',

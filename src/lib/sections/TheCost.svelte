@@ -76,7 +76,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 660} caps={thecost.captions.map((c) => (c.at + c.until) / 2)}>
+<ScrollScene heightVh={reduced ? 100 : 660} caps={[...thecost.captions, thecost.statement].map((c) => (c.at + c.until) / 2)}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const clipW = margin.left + (width - margin.left - margin.right) * f.lines}
@@ -163,7 +163,14 @@
       </div>
       {#if reduced}
         <div class="mx-auto w-full max-w-xl space-y-3 pb-8 pt-4">
-          {#each thecost.captions as cap}
+          {#each thecost.captions.slice(0, 2) as cap}
+            <p class="relative rounded border border-hairline bg-card/90 p-4 font-serif text-lg text-ink"><RichText text={cap.text} /></p>
+          {/each}
+          <div class="relative rounded border border-hairline bg-card/90 p-4 text-center">
+            <p class="font-serif text-2xl leading-snug text-ink">{thecost.statement.title}</p>
+            <p class="mt-2 font-serif text-base text-muted"><RichText text={thecost.statement.sub} /></p>
+          </div>
+          {#each thecost.captions.slice(2) as cap}
             <p class="relative rounded border border-hairline bg-card/90 p-4 font-serif text-lg text-ink"><RichText text={cap.text} /></p>
           {/each}
         </div>
@@ -172,10 +179,15 @@
           {#each thecost.captions as cap}
             <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
                style="opacity: {windowEnv(progress, cap.at, cap.until)}">
-              
+
               <RichText text={cap.text} />
             </p>
           {/each}
+          <div class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 px-6 py-5 text-center"
+               style="opacity: {windowEnv(progress, thecost.statement.at, thecost.statement.until)}">
+            <p class="font-serif text-2xl leading-snug text-ink">{thecost.statement.title}</p>
+            <p class="mt-2 font-serif text-base text-muted"><RichText text={thecost.statement.sub} /></p>
+          </div>
         </div>
       {/if}
     </div>
