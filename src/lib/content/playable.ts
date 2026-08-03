@@ -1,8 +1,8 @@
 export const playable = {
-  kicker: 'Part one',
+  kicker: 'Part one - continued',
   title: 'Play it first',
   intro: {
-    lead: 'Two people are both better off if they cooperate - but each one is better off defecting, whatever the other does. That trap is the Prisoner’s Dilemma, and it is everywhere: everyone wants the river clean, and everyone would rather dump in it. Before the data, sit in the chair yourself. Ten rounds against the same partner; each round, both of you choose in secret - cooperate or defect.',
+    lead: 'You have seen the trap from the outside. Now sit in it. Ten rounds against the same partner - each round, both of you choose in secret: cooperate or defect.',
     matrixNote: 'Points per round. Mutual cooperation beats mutual defection - but defecting against a cooperator pays most, once.',
     disclaimer: 'This warm-up is for intuition; it is not part of the study data.',
     start: 'play round 1',

@@ -2,6 +2,7 @@
   import Unravelling from '$lib/sections/Unravelling.svelte';
   import Nav from '$lib/components/Nav.svelte';
   import Hero from '$lib/sections/Hero.svelte';
+  import Dilemma from '$lib/sections/Dilemma.svelte';
   import Playable from '$lib/sections/Playable.svelte';
   import Theory from '$lib/sections/Theory.svelte';
   import Experiment from '$lib/sections/Experiment.svelte';
@@ -39,6 +40,8 @@
 
 <main class="bg-paper text-ink">
   <Hero {heartbeat} />
+
+  <Dilemma />
 
   <Playable />
 
