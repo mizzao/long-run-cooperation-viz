@@ -1,9 +1,11 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { beat } from '$lib/scroll/progress';
+  import RichText from '$lib/components/RichText.svelte';
   import { parseMonth, type MonthSession } from '$lib/data/month';
   import { W, H, TG, SW, SH, colX, waveYOff, CELL } from '$lib/viz/tangleGeom';
   import { panelPos, camera, viewport, hitTest } from '$lib/viz/monthCamera';
+  import { resolvePois, projector, type ResolvedPoi } from '$lib/viz/monthPoi';
 
   let {
     progress,
@@ -21,11 +23,22 @@
   // smoothed lens position (css px); deliberately non-reactive - the tick loop owns it
   let lens: { x: number; y: number } | null = null;
 
+  // marked points of interest; resolved once the month data is in
+  let pois: ResolvedPoi[] = [];
+  let hovered = $state<ResolvedPoi | null>(null);
+  let opened = $state<ResolvedPoi | null>(null);
+  let anchor = $state<{ x: number; y: number } | null>(null);
+  let cardH = $state(260); // measured; a wave card is much taller than a game card
+
   // the magnifier is available once the camera has settled on the full month
-  const canHover = $derived(beat(progress, 0.73, 1) >= 0.86);
+  const settled = $derived(beat(progress, 0.73, 1) >= 0.86);
+  const canHover = $derived(settled && !opened);
   const LENS_R = 105; // css px
   const ZOOM = 7;
   const FOLLOW = 9; // damping rate (1/s) - the lens trails the cursor
+  const GOLD = '#C79008';
+  const MARK_R = 7.5; // css px; markers are screen-sized so they stay legible
+  const TAU = Math.PI * 2;
 
   const dpr = () => Math.min(typeof window === 'undefined' ? 1 : window.devicePixelRatio || 1, 2);
 
@@ -66,6 +79,7 @@
       if (dead) return;
       const month = parseMonth(raw);
       panels = month.sessions.map((s) => ({ ...panelPos(s.day, s.slot), waves: s.waves, mips: [] }));
+      pois = resolvePois(month.sessions);
       // hi scale so the day-1 tile is ~1:1 with its on-screen size at the crossfade
       const hi = Math.min(2, Math.max(1, dpr() * viewport(width, height).s0));
       const MIPS = [0.5, 0.25, 0.125, 0.0625];
@@ -78,7 +92,9 @@
         await nextFrame();
       }
     })();
-    return () => { dead = true; };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') close(); };
+    window.addEventListener('keydown', onKey);
+    return () => { dead = true; window.removeEventListener('keydown', onKey); };
   });
 
   function pickMip(p: Panel, s: number): HTMLCanvasElement {
@@ -86,6 +102,105 @@
     for (const m of p.mips) if (m.scale >= s && m.scale < best.scale) best = m;
     return best.img;
   }
+
+  // ---- marked points -------------------------------------------------------
+
+  type Proj = (xw: number, yw: number) => { x: number; y: number };
+
+  /** Where a marker's ring sits: on the game itself, or just above a wave column. */
+  function ringAt(p: ResolvedPoi, proj: Proj) {
+    const c = proj(p.cx, p.cy);
+    if (p.kind === 'game') return c;
+    return { x: c.x, y: proj(p.cx, p.rect.y).y - 13 };
+  }
+
+  function poiAt(proj: Proj, x: number, y: number): ResolvedPoi | null {
+    let best: ResolvedPoi | null = null;
+    let bestD = 15; // css px
+    for (const p of pois) {
+      const r = ringAt(p, proj);
+      const d = Math.hypot(x - r.x, y - r.y);
+      if (d < bestD) { bestD = d; best = p; }
+      if (p.kind === 'wave') {
+        const a = proj(p.rect.x, p.rect.y);
+        const b = proj(p.rect.x + p.rect.w, p.rect.y + p.rect.h);
+        if (x > a.x - 6 && x < b.x + 6 && y > a.y - 6 && y < b.y + 6 && bestD >= 15) best = p;
+      }
+    }
+    return best;
+  }
+
+  function drawMarkers(ctx: CanvasRenderingContext2D, d: number, proj: Proj, alpha: number) {
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.globalAlpha = alpha;
+    for (const p of pois) {
+      const hot = hovered?.id === p.id || opened?.id === p.id;
+      if (p.kind === 'wave') {
+        const a = proj(p.rect.x, p.rect.y);
+        const b = proj(p.rect.x + p.rect.w, p.rect.y + p.rect.h);
+        ctx.beginPath();
+        ctx.rect((a.x - 3) * d, (a.y - 3) * d, (b.x - a.x + 6) * d, (b.y - a.y + 6) * d);
+        ctx.strokeStyle = GOLD;
+        ctx.globalAlpha = alpha * (hot ? 1 : 0.55);
+        ctx.lineWidth = (hot ? 2 : 1.25) * d;
+        ctx.stroke();
+        ctx.globalAlpha = alpha;
+      }
+      const { x, y } = ringAt(p, proj);
+      const r = (hot ? MARK_R + 2.5 : MARK_R) * d;
+      if (hot) {
+        ctx.beginPath();
+        ctx.arc(x * d, y * d, r + 6 * d, 0, TAU);
+        ctx.fillStyle = 'rgba(199, 144, 8, 0.2)';
+        ctx.fill();
+      }
+      ctx.beginPath();
+      ctx.arc(x * d, y * d, r, 0, TAU);
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 3.5 * d;
+      ctx.stroke();
+      ctx.strokeStyle = GOLD;
+      ctx.lineWidth = 1.75 * d;
+      ctx.stroke();
+      if (p.kind === 'game') {
+        ctx.beginPath();
+        ctx.arc(x * d, y * d, r * 0.4, 0, TAU);
+        ctx.fillStyle = GOLD;
+        ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
+
+  function open(p: ResolvedPoi, proj: Proj) {
+    opened = p;
+    anchor = ringAt(p, proj);
+    mouse = null;
+    lens = null;
+  }
+
+  function close() {
+    opened = null;
+    anchor = null;
+  }
+
+  /** Card position: below-right of the marker where there is room, else flipped. */
+  const card = $derived.by(() => {
+    const w = Math.min(400, Math.max(240, width - 32));
+    if (!anchor) return { x: 16, y: 16, w };
+    let x = anchor.x + 22;
+    let y = anchor.y + 18;
+    if (x + w > width - 16) x = anchor.x - 22 - w;
+    if (y + cardH > height - 12) y = anchor.y - 18 - cardH;
+    return {
+      x: Math.max(16, Math.min(x, width - w - 16)),
+      y: Math.max(12, Math.min(y, Math.max(12, height - cardH - 12))),
+      w
+    };
+  });
+
+  // ---- lens ----------------------------------------------------------------
 
   function drawLens(ctx: CanvasRenderingContext2D, d: number, s0: number, ox: number, oy: number, cam: { k: number; cx: number; cy: number }, m: { x: number; y: number }): boolean {
     const S = d * s0 * cam.k;
@@ -132,12 +247,19 @@
         }
       }
     }
+    // ring the marked game inside the lens, so the caption has something to point at
+    if (hovered) {
+      const rc = hovered.rect;
+      ctx.strokeStyle = GOLD;
+      ctx.lineWidth = 2 / SL;
+      ctx.strokeRect(rc.x - 1.5, rc.y - 1.5, rc.w + 3, rc.h + 3);
+    }
     ctx.restore();
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.beginPath();
     ctx.arc(cx, cy, R + d, 0, Math.PI * 2);
-    ctx.strokeStyle = '#FFFFFF';
+    ctx.strokeStyle = hovered ? GOLD : '#FFFFFF';
     ctx.lineWidth = 4 * d;
     ctx.stroke();
     ctx.beginPath();
@@ -146,11 +268,14 @@
     ctx.lineWidth = d;
     ctx.stroke();
 
-    const label = `day ${hit.day} - ${hit.slot === '1pm' ? '13:00' : '15:00'}`;
+    const label = hovered ? hovered.title : `day ${hit.day} - ${hit.slot === '1pm' ? '13:00' : '15:00'}`;
+    const hint = hovered ? 'click to read' : '';
     ctx.font = `${11 * d}px 'Inter Variable', system-ui, sans-serif`;
     const tw = ctx.measureText(label).width;
-    const chW = tw + 20 * d;
-    const chH = 22 * d;
+    ctx.font = `${9 * d}px 'Inter Variable', system-ui, sans-serif`;
+    const hw = hint ? ctx.measureText(hint).width : 0;
+    const chW = Math.max(tw, hw) + 20 * d;
+    const chH = (hint ? 34 : 22) * d;
     const chX = cx - chW / 2;
     const chY = cy + R + 10 * d;
     ctx.beginPath();
@@ -158,13 +283,19 @@
     else ctx.rect(chX, chY, chW, chH);
     ctx.fillStyle = '#FFFFFF';
     ctx.fill();
-    ctx.strokeStyle = '#DFD8C8';
+    ctx.strokeStyle = hovered ? GOLD : '#DFD8C8';
     ctx.lineWidth = d;
     ctx.stroke();
-    ctx.fillStyle = '#211E19';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(label, cx, chY + chH / 2);
+    ctx.fillStyle = '#211E19';
+    ctx.font = `${11 * d}px 'Inter Variable', system-ui, sans-serif`;
+    ctx.fillText(label, cx, chY + (hint ? 13 : 11) * d);
+    if (hint) {
+      ctx.fillStyle = GOLD;
+      ctx.font = `${9 * d}px 'Inter Variable', system-ui, sans-serif`;
+      ctx.fillText(hint, cx, chY + 25 * d);
+    }
     return true;
   }
 
@@ -208,7 +339,10 @@
     }
     ctx.globalAlpha = 1;
 
-    const on = t >= 0.86 && lens !== null && drawLens(ctx, d, s0, ox, oy, cam, lens);
+    const markA = beat(t, 0.86, 0.94);
+    if (markA > 0.01 && pois.length) drawMarkers(ctx, d, projector(cam, { s0, ox, oy }, W, H), markA);
+
+    const on = t >= 0.86 && !opened && lens !== null && drawLens(ctx, d, s0, ox, oy, cam, lens);
     if (on !== lensOn) lensOn = on;
   }
 
@@ -238,11 +372,44 @@
     else lastT = 0;
   }
 
+  function localPoint(e: PointerEvent) {
+    const r = canvas.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+
+  function currentProj(): Proj {
+    const view = viewport(width, height);
+    return projector(camera(beat(progress, 0.73, 1)), view, W, H);
+  }
+
   function onMove(e: PointerEvent) {
     if (e.pointerType !== 'mouse') return;
-    const r = canvas.getBoundingClientRect();
-    mouse = { x: e.clientX - r.left, y: e.clientY - r.top };
+    const p = localPoint(e);
+    if (settled && pois.length) hovered = poiAt(currentProj(), p.x, p.y);
+    if (opened) return;
+    mouse = p;
   }
+
+  function onDown(e: PointerEvent) {
+    if (!settled || !pois.length) return;
+    const p = localPoint(e);
+    const proj = currentProj();
+    const hit = poiAt(proj, p.x, p.y);
+    if (hit) {
+      hovered = hit;
+      open(hit, proj);
+    } else if (opened) {
+      close();
+    }
+  }
+
+  // a resize invalidates the anchor the card was placed against
+  let lastSize = '';
+  $effect(() => {
+    const size = `${width}x${height}`;
+    if (lastSize && size !== lastSize) close();
+    lastSize = size;
+  });
 
   $effect(() => {
     void progress;
@@ -250,6 +417,8 @@
     void height;
     void mouse;
     void rev;
+    void hovered;
+    void opened;
     if (!raf) raf = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(raf);
@@ -259,6 +428,67 @@
 </script>
 
 <canvas bind:this={canvas} class="absolute inset-0 h-full w-full"
-        style="pointer-events: {canHover ? 'auto' : 'none'}; cursor: {lensOn ? 'none' : 'default'}"
-        onpointermove={onMove} onpointerleave={() => (mouse = null)}
+        style="pointer-events: {settled ? 'auto' : 'none'}; cursor: {hovered ? 'pointer' : lensOn ? 'none' : 'default'}"
+        onpointermove={onMove} onpointerdown={onDown} onpointerleave={() => { mouse = null; hovered = null; }}
   >All 374,251 decisions of the experiment: 40 session panels arranged as a five-by-four grid of days</canvas>
+
+{#if opened}
+  {@const poi = opened}
+  <div bind:clientHeight={cardH}
+       class="pointer-events-auto absolute z-20 rounded-lg border border-hairline bg-card p-5 shadow-xl"
+       style="left: {card.x}px; top: {card.y}px; width: {card.w}px">
+    <button onclick={close} aria-label="Close"
+            class="absolute right-2.5 top-2.5 grid h-6 w-6 place-items-center rounded text-muted transition hover:bg-paper hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+      <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1 1 L11 11 M11 1 L1 11" /></svg>
+    </button>
+
+    <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-resilient">{poi.rarity}</p>
+    <h3 class="mt-1 pr-6 font-serif text-xl leading-tight text-ink">{poi.title}</h3>
+    <p class="mt-1 font-mono text-[10px] text-muted">
+      {poi.address}{poi.kind === 'game' ? ' · one pair' : ` · ${poi.pairs.length} pairs at once`}
+    </p>
+
+    {#if poi.kind === 'game'}
+      {@const g = poi.pairs[0]}
+      <div class="mt-4">
+        <div class="grid grid-cols-[3.4rem_repeat(10,1fr)] gap-[3px]">
+          <span></span>
+          {#each Array.from({ length: 10 }) as _, r}
+            <span class="text-center font-mono text-[9px] text-muted">{r + 1}</span>
+          {/each}
+        </div>
+        {#each [{ label: 'player A', from: 0 }, { label: 'player B', from: 10 }] as row}
+          <div class="mt-[3px] grid grid-cols-[3.4rem_repeat(10,1fr)] items-center gap-[3px]">
+            <span class="text-right font-sans text-[10px] text-muted">{row.label}</span>
+            {#each Array.from({ length: 10 }) as _, r}
+              <span class="h-6 rounded-[3px]" style="background: {CELL[g[row.from + r] as keyof typeof CELL]}"></span>
+            {/each}
+          </div>
+        {/each}
+      </div>
+    {:else}
+      <div class="mt-4">
+        <div class="flex flex-col gap-[2px]">
+          {#each poi.pairs as pair}
+            <div class="flex flex-col gap-px">
+              {#each [0, 10] as from}
+                <div class="grid grid-cols-10 gap-px">
+                  {#each Array.from({ length: 10 }) as _, r}
+                    <span class="h-[2px]" style="background: {CELL[pair[from + r] as keyof typeof CELL]}"></span>
+                  {/each}
+                </div>
+              {/each}
+            </div>
+          {/each}
+        </div>
+        <div class="mt-1.5 grid grid-cols-10 gap-px">
+          {#each Array.from({ length: 10 }) as _, r}
+            <span class="text-center font-mono text-[8px] text-muted">{r + 1}</span>
+          {/each}
+        </div>
+      </div>
+    {/if}
+
+    <p class="mt-4 font-serif text-[15px] leading-relaxed text-ink"><RichText text={poi.text} /></p>
+  </div>
+{/if}
