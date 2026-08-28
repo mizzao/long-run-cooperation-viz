@@ -3,6 +3,7 @@
   import RichText from '$lib/components/RichText.svelte';
   import CapId from '$lib/components/CapId.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
+  import { tw } from '$lib/dev/tuning.svelte';
   import { gridPos, columnPos, lerpPos, type Area } from '$lib/viz/peopleLayout';
   import { GROUP_ORDER, groupCounts, type PlayerStrategy } from '$lib/data/strategies';
   import { the36 } from '$lib/content/the36';
@@ -127,7 +128,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 680} caps={the36.captions.map((c) => (c.at + c.until) / 2)}>
+<ScrollScene heightVh={reduced ? 100 : 680} captions={the36.captions}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const baseY = area.y + area.h}
@@ -201,7 +202,7 @@
         <div class="pointer-events-none absolute inset-x-6 top-24 z-10 mx-auto grid w-full max-w-xl">
           {#each the36.captions as cap, ci}
             <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
-               style="opacity: {windowEnv(progress, cap.at, cap.until)}">
+               style="opacity: {windowEnv(progress, ...tw(cap))}">
               <CapId id={cap.id} />
               <RichText text={cap.text} />
             </p>

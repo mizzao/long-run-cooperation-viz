@@ -13,7 +13,16 @@
   injectAnalytics({ mode: dev ? 'development' : 'production' });
 
   let { children } = $props();
-  onMount(() => initLenis());
+
+  // Caption timing editor. Gated in the script rather than the markup so the
+  // `dev === false` branch folds away and the panel chunk is never emitted.
+  type TunerComponent = typeof import('$lib/dev/CapTuner.svelte').default;
+  let Tuner = $state<TunerComponent | null>(null);
+
+  onMount(() => {
+    if (dev) import('$lib/dev/CapTuner.svelte').then((m) => (Tuner = m.default));
+    return initLenis();
+  });
 </script>
 
 <svelte:head>
@@ -21,3 +30,7 @@
 </svelte:head>
 
 {@render children()}
+
+{#if Tuner}
+  <Tuner />
+{/if}

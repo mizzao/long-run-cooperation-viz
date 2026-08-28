@@ -3,6 +3,7 @@
   import RichText from '$lib/components/RichText.svelte';
   import CapId from '$lib/components/CapId.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
+  import { tune, tw } from '$lib/dev/tuning.svelte';
   import { gridPos, type Area } from '$lib/viz/peopleLayout';
   import { W, H, TG, colX } from '$lib/viz/tangleGeom';
   import MonthCanvas from '$lib/viz/MonthCanvas.svelte';
@@ -148,7 +149,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 1150} caps={experiment.captions.map((c) => (c.at + c.until) / 2)}>
+<ScrollScene heightVh={reduced ? 100 : 1150} captions={experiment.captions}>
   {#snippet children({ progress }: { progress: number })}
     {@const f = frame(reduced ? 1 : progress)}
     {@const stageA = reduced ? 0 : f.stageA}
@@ -315,9 +316,9 @@
           </div>
         {/if}
         {#each experiment.captions as c}
-          {@const env = reduced ? 1 : windowEnv(progress, c.at, c.until, 0.025)}
+          {@const env = reduced ? 1 : windowEnv(progress, ...tw(c), 0.025)}
           {#if reduced || env > 0.01}
-            <div class="{reduced ? 'relative mb-3' : c.at >= 0.75 ? 'absolute inset-x-0 top-4' : 'absolute inset-x-0 -top-14'} mx-auto max-w-2xl rounded border border-hairline bg-card/95 px-6 py-4 text-center"
+            <div class="{reduced ? 'relative mb-3' : tune(c).at >= 0.75 ? 'absolute inset-x-0 top-4' : 'absolute inset-x-0 -top-14'} mx-auto max-w-2xl rounded border border-hairline bg-card/95 px-6 py-4 text-center"
                  style={reduced ? '' : `opacity: ${env}; transform: translateY(${(1 - env) * 10}px)`}>
               
               <CapId id={c.id} />

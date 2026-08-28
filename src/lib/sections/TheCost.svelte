@@ -3,6 +3,7 @@
   import RichText from '$lib/components/RichText.svelte';
   import CapId from '$lib/components/CapId.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
+  import { tw } from '$lib/dev/tuning.svelte';
   import { scaleLinear } from 'd3-scale';
   import { parsePayoffs, stableGap, type DayPayoff } from '$lib/data/payoffs';
   import { thecost } from '$lib/content/thecost';
@@ -77,7 +78,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 660} caps={[...thecost.captions, thecost.statement].map((c) => (c.at + c.until) / 2)}>
+<ScrollScene heightVh={reduced ? 100 : 660} captions={[...thecost.captions, thecost.statement]}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const clipW = margin.left + (width - margin.left - margin.right) * f.lines}
@@ -180,13 +181,13 @@
         <div class="pointer-events-none absolute inset-x-6 bottom-20 z-10 mx-auto grid w-full max-w-xl">
           {#each thecost.captions as cap}
             <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
-               style="opacity: {windowEnv(progress, cap.at, cap.until)}">
+               style="opacity: {windowEnv(progress, ...tw(cap))}">
               <CapId id={cap.id} />
               <RichText text={cap.text} />
             </p>
           {/each}
           <div class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 px-6 py-5 text-center"
-               style="opacity: {windowEnv(progress, thecost.statement.at, thecost.statement.until)}">
+               style="opacity: {windowEnv(progress, ...tw(thecost.statement))}">
             <CapId id={thecost.statement.id} />
             <p class="font-serif text-2xl leading-snug text-ink">{thecost.statement.title}</p>
             <p class="mt-2 font-serif text-base text-muted"><RichText text={thecost.statement.sub} /></p>

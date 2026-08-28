@@ -3,6 +3,7 @@
   import RichText from '$lib/components/RichText.svelte';
   import CapId from '$lib/components/CapId.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
+  import { tune, tw } from '$lib/dev/tuning.svelte';
   import { scaleLinear } from 'd3-scale';
   import type { SimulationData } from '$lib/data/simulation';
   import { itworks } from '$lib/content/itworks';
@@ -74,7 +75,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 800} caps={itworks.captions.map((c) => (c.at + c.until) / 2)}>
+<ScrollScene heightVh={reduced ? 100 : 800} captions={itworks.captions}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const m = mobile ? { top: 72, right: 24, bottom: 56, left: 40 } : { top: 78, right: 64, bottom: 64, left: 64 }}
@@ -223,9 +224,9 @@
           </div>
         {/if}
         <div class="pointer-events-none absolute inset-x-6 top-4 z-10 mx-auto grid w-full max-w-xl">
-          {#each itworks.captions.filter((c) => c.at >= 0.9) as cap}
+          {#each itworks.captions.filter((c) => tune(c).at >= 0.9) as cap}
             <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
-               style="opacity: {windowEnv(progress, cap.at, cap.until)}">
+               style="opacity: {windowEnv(progress, ...tw(cap))}">
               <CapId id={cap.id} />
               <RichText text={cap.text} />
             </p>
@@ -241,9 +242,9 @@
       {:else}
         <div class="relative -mt-6 h-36 shrink-0">
           <div class="pointer-events-none absolute inset-x-6 top-2 z-10 mx-auto grid w-full max-w-xl">
-            {#each itworks.captions.filter((c) => c.at < 0.9) as cap}
+            {#each itworks.captions.filter((c) => tune(c).at < 0.9) as cap}
               <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
-                 style="opacity: {windowEnv(progress, cap.at, cap.until)}">
+                 style="opacity: {windowEnv(progress, ...tw(cap))}">
                 <CapId id={cap.id} />
                 <RichText text={cap.text} />
               </p>

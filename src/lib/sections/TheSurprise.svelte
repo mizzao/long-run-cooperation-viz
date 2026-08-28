@@ -3,6 +3,7 @@
   import RichText from '$lib/components/RichText.svelte';
   import CapId from '$lib/components/CapId.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
+  import { tw } from '$lib/dev/tuning.svelte';
   import type { WelfareData } from '$lib/data/welfare';
   import { thesurprise } from '$lib/content/thesurprise';
 
@@ -32,7 +33,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 420} caps={thesurprise.captions.map((c) => (c.at + c.until) / 2)}>
+<ScrollScene heightVh={reduced ? 100 : 420} captions={thesurprise.captions}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const x0 = mobile ? 28 : width * 0.12}
@@ -90,7 +91,7 @@
           <div class="pointer-events-none absolute inset-x-6 top-2 z-10 mx-auto grid w-full max-w-xl">
             {#each thesurprise.captions as cap}
               <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
-                 style="opacity: {windowEnv(progress, cap.at, cap.until)}">
+                 style="opacity: {windowEnv(progress, ...tw(cap))}">
                 <CapId id={cap.id} />
                 <RichText text={cap.text} />
               </p>

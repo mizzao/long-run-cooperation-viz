@@ -14,8 +14,8 @@ export function initLenis(): () => void {
   return () => { cancelAnimationFrame(raf); lenis.destroy(); instance = null; };
 }
 
-export function scrollToY(y: number) {
+export function scrollToY(y: number, immediate = false) {
   if (typeof window === 'undefined') return;
-  if (instance) instance.scrollTo(y, { duration: 1.0 });
-  else window.scrollTo({ top: y, behavior: 'smooth' });
+  if (instance) instance.scrollTo(y, immediate ? { immediate: true } : { duration: 1.0 });
+  else window.scrollTo({ top: y, behavior: immediate ? 'auto' : 'smooth' });
 }

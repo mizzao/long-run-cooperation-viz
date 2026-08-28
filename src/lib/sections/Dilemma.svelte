@@ -3,6 +3,7 @@
   import RichText from '$lib/components/RichText.svelte';
   import CapId from '$lib/components/CapId.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
+  import { tw } from '$lib/dev/tuning.svelte';
   import { dilemma } from '$lib/content/dilemma';
 
   const READER = '#2D5192';
@@ -86,7 +87,7 @@
   <rect x="-17" y="-23" width="34" height="46" rx="5" fill={color} />
 {/snippet}
 
-<ScrollScene heightVh={reduced ? 100 : 820} caps={dilemma.captions.map((c) => (c.at + c.until) / 2)}>
+<ScrollScene heightVh={reduced ? 100 : 820} captions={dilemma.captions}>
   {#snippet children({ progress }: { progress: number })}
     {@const f = frame(reduced ? 1 : progress)}
     <div class="mx-auto flex h-full w-full max-w-7xl flex-col px-6 pb-6 pt-10">
@@ -243,7 +244,7 @@
           <div class="pointer-events-none absolute inset-x-6 top-2 z-10 mx-auto grid w-full max-w-xl">
             {#each dilemma.captions as cap}
               <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
-                 style="opacity: {windowEnv(progress, cap.at, cap.until, 0.03)}">
+                 style="opacity: {windowEnv(progress, ...tw(cap), 0.03)}">
                 <CapId id={cap.id} />
                 <RichText text={cap.text} />
               </p>

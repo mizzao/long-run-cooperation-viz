@@ -3,6 +3,7 @@
   import RichText from '$lib/components/RichText.svelte';
   import CapId from '$lib/components/CapId.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
+  import { tw } from '$lib/dev/tuning.svelte';
   import { theory } from '$lib/content/theory';
 
   const COOP = '#15735B';
@@ -53,7 +54,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 680} caps={theory.captions.map((c) => (c.at + c.until) / 2)}>
+<ScrollScene heightVh={reduced ? 100 : 680} captions={theory.captions}>
   {#snippet children({ progress }: { progress: number })}
     {@const f = frame(reduced ? 1 : progress)}
     <div class="mx-auto flex h-full w-full max-w-7xl flex-col px-6 pt-10">
@@ -116,7 +117,7 @@
           </div>
         {/if}
         {#each theory.captions as c}
-          {@const env = reduced ? 1 : windowEnv(progress, c.at, c.until)}
+          {@const env = reduced ? 1 : windowEnv(progress, ...tw(c))}
           {#if reduced || env > 0.01}
             <div class="{reduced ? 'relative mb-3' : 'absolute inset-x-0 top-0'} mx-auto max-w-2xl rounded border border-hairline bg-card/95 px-6 py-4 text-center"
                  style={reduced ? '' : `opacity: ${env}; transform: translateY(${(1 - env) * 10}px)`}>

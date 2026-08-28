@@ -3,6 +3,7 @@
   import RichText from '$lib/components/RichText.svelte';
   import CapId from '$lib/components/CapId.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
+  import { tw } from '$lib/dev/tuning.svelte';
   import { gridPos } from '$lib/viz/peopleLayout';
   import type { PlayerStrategy } from '$lib/data/strategies';
   import { thecoda } from '$lib/content/thecoda';
@@ -44,7 +45,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 480} caps={thecoda.captions.map((c) => (c.at + c.until) / 2)}>
+<ScrollScene heightVh={reduced ? 100 : 480} captions={thecoda.captions}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const spacing = mobile ? 24 : 34}
@@ -106,7 +107,7 @@
           <div class="pointer-events-none absolute inset-x-6 top-2 z-10 mx-auto grid w-full max-w-xl">
             {#each thecoda.captions as cap}
               <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
-                 style="opacity: {windowEnv(progress, cap.at, cap.until)}">
+                 style="opacity: {windowEnv(progress, ...tw(cap))}">
                 <CapId id={cap.id} />
                 <RichText text={cap.text} />
               </p>

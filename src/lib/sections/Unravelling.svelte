@@ -3,6 +3,7 @@
   import RichText from '$lib/components/RichText.svelte';
   import CapId from '$lib/components/CapId.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
+  import { tw } from '$lib/dev/tuning.svelte';
   import { gameScale, rateScale, positionScale, type ChartBox } from '$lib/viz/scales';
   import { roundLinePath, heartbeatPath } from '$lib/viz/paths';
   import { dayBoundaries, type CooperationData, type Heartbeat } from '$lib/data/cooperation';
@@ -50,6 +51,10 @@
   );
   const dayStarts = $derived(dayBoundaries(coop.dayOfGame));
   const reduced = prefersReducedMotion();
+
+  // These chart highlights are the visual referent of a specific caption, so
+  // they share its window: retiming the caption moves its highlight with it.
+  const capById = (id: string) => unravelling.captions.find((c) => c.id === id)!;
 
   const dipPos = 30;
   const restartPos = 31;
@@ -127,13 +132,14 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 680} caps={unravelling.captions.map((c) => (c.at + c.until) / 2)}>
+<ScrollScene heightVh={reduced ? 100 : 680} captions={unravelling.captions}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const plotBottom = height - box.margin.bottom}
-    {@const day1Env = reduced ? 0 : windowEnv(progress, 0.3, 0.47)}
-    {@const day1Grow = reduced ? 1 : beat(progress, 0.3, 0.36)}
-    {@const foc = reduced ? { '1': 0, '8': 0, '9': 0, '10': 0 } : { '1': windowEnv(progress, 0.85, 1), '8': 0, '9': windowEnv(progress, 0.66, 0.82), '10': windowEnv(progress, 0.48, 0.65) }}
+    {@const w2 = tw(capById('P4C2'))}
+    {@const day1Env = reduced ? 0 : windowEnv(progress, ...w2)}
+    {@const day1Grow = reduced ? 1 : beat(progress, w2[0], w2[0] + 0.06)}
+    {@const foc = reduced ? { '1': 0, '8': 0, '9': 0, '10': 0 } : { '1': windowEnv(progress, ...tw(capById('P4C5'))), '8': 0, '9': windowEnv(progress, ...tw(capById('P4C4'))), '10': windowEnv(progress, ...tw(capById('P4C3'))) }}
     {@const maxFoc = Math.max(foc['1'], foc['9'], foc['10'])}
     {@const morningEnv = reduced ? 0 : windowEnv(progress, 0.52, 0.78)}
     {@const day2Rate = coop.rounds['10'][20].rate ?? 0.5}
@@ -265,7 +271,7 @@
         <div class="pointer-events-none absolute inset-x-6 bottom-20 z-10 mx-auto grid w-full max-w-xl">
           {#each unravelling.captions as cap, ci}
             <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
-               style="opacity: {windowEnv(progress, cap.at, cap.until)}">
+               style="opacity: {windowEnv(progress, ...tw(cap))}">
               <CapId id={cap.id} />
               <RichText text={cap.text} />
             </p>

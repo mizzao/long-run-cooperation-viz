@@ -2,14 +2,27 @@
   import { onMount } from 'svelte';
   import type { Snippet } from 'svelte';
   import { prefersReducedMotion } from './progress';
+  import { registerScene, tune, type CapWindow } from '$lib/dev/tuning.svelte';
 
-  let { heightVh = 300, caps, children }: { heightVh?: number; caps?: number[]; children: Snippet<[{ progress: number }]> } = $props();
+  let { heightVh = 300, captions, children }: { heightVh?: number; captions?: readonly CapWindow[]; children: Snippet<[{ progress: number }]> } = $props();
   let wrapper: HTMLElement;
   let progress = $state(0);
   const reducedMode = prefersReducedMotion();
 
+  // Nav waypoints: the midpoint of each caption window, exposed as data-caps.
+  const caps = $derived(
+    captions?.map((c) => {
+      const t = tune(c);
+      return (t.at + t.until) / 2;
+    })
+  );
+
   onMount(() => {
-    if (prefersReducedMotion()) { progress = 1; return; }
+    const unregister = registerScene(wrapper, captions);
+    if (prefersReducedMotion()) {
+      progress = 1;
+      return unregister;
+    }
     let ctx: { kill: () => void } | undefined;
     let destroyed = false;
     (async () => {
@@ -26,7 +39,7 @@
       });
       ctx = st;
     })();
-    return () => { destroyed = true; ctx?.kill(); };
+    return () => { destroyed = true; ctx?.kill(); unregister(); };
   });
 </script>
 

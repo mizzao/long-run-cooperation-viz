@@ -3,6 +3,7 @@
   import RichText from '$lib/components/RichText.svelte';
   import CapId from '$lib/components/CapId.svelte';
   import { beat, windowEnv, prefersReducedMotion } from '$lib/scroll/progress';
+  import { tune, tw } from '$lib/dev/tuning.svelte';
   import { gameScale, rateScale, type ChartBox } from '$lib/viz/scales';
   import { roundLinePath } from '$lib/viz/paths';
   import { rollingMean, dailyMeans, slopePerDay, type CooperationData } from '$lib/data/cooperation';
@@ -87,7 +88,7 @@
   }
 </script>
 
-<ScrollScene heightVh={reduced ? 100 : 660} caps={itstops.captions.map((c) => (c.at + c.until) / 2)}>
+<ScrollScene heightVh={reduced ? 100 : 660} captions={itstops.captions}>
   {#snippet children({ progress })}
     {@const f = frame(progress)}
     {@const plotRight = width - box.margin.right}
@@ -208,18 +209,18 @@
         </div>
       {:else}
         <div class="pointer-events-none absolute inset-x-6 bottom-20 z-10 mx-auto grid w-full max-w-xl">
-          {#each itstops.captions.filter((c) => c.at < 0.7) as cap, ci}
+          {#each itstops.captions.filter((c) => tune(c).at < 0.7) as cap, ci}
             <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
-               style="opacity: {windowEnv(progress, cap.at, cap.until)}">
+               style="opacity: {windowEnv(progress, ...tw(cap))}">
               <CapId id={cap.id} />
               <RichText text={cap.text} />
             </p>
           {/each}
         </div>
         <div class="pointer-events-none absolute inset-x-6 top-28 z-10 mx-auto grid w-full max-w-xl">
-          {#each itstops.captions.filter((c) => c.at >= 0.7) as cap, ci}
+          {#each itstops.captions.filter((c) => tune(c).at >= 0.7) as cap, ci}
             <p class="relative col-start-1 row-start-1 rounded border border-hairline bg-card/95 p-4 text-center font-serif text-lg text-ink"
-               style="opacity: {windowEnv(progress, cap.at, cap.until)}">
+               style="opacity: {windowEnv(progress, ...tw(cap))}">
               <CapId id={cap.id} />
               <RichText text={cap.text} />
             </p>
